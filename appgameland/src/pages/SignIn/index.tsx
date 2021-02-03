@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, Platform, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { useNavigation } from '@react-navigation/native'
 import { Checkbox } from 'react-native-paper'
 
 import Input from '../../components/Input'
@@ -28,6 +29,8 @@ import {
 const SignIn: React.FC = () => {
 	const [checked, setChecked] = useState(false)
 
+	const navigation = useNavigation()
+
 	return (
 		<KeyboardAvoidingView 
 			style={{ flex: 1 }}
@@ -39,7 +42,7 @@ const SignIn: React.FC = () => {
 				contentContainerStyle={{ flex: 2 }}
 			>
 				<Intro>
-					<IntroBackground source={background}  />
+					<IntroBackground source={background} />
 
 					<View>
 						<IntroTitle>Game Land</IntroTitle>
@@ -50,7 +53,7 @@ const SignIn: React.FC = () => {
 					<Form>
 						<FormRow style={{ marginBottom: 20 }}>
 							<FormTitle>Sign In</FormTitle>
-							<TouchableOpacity>
+							<TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
 								<RegisterButtonText>Register here</RegisterButtonText>
 							</TouchableOpacity>
 						</FormRow>
