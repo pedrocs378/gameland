@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, Platform, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
 import { Checkbox } from 'react-native-paper'
 
 import Input from '../../components/Input'
+import Button from '../../components/Button'
 
 import background from '../../assets/introBackground.png'
 
@@ -22,14 +23,24 @@ import {
 	RememberInput,
 	RememberInputText,
 	ForgotPasswordText,
-	FormButton,
-	FormButtonText,
+	ButtonText,
 } from './styles'
 
 const SignIn: React.FC = () => {
 	const [checked, setChecked] = useState(false)
+	const [active, setActive] = useState(false)
+	const [email, setEmail] = useState("")
+	const [password, setPassword] = useState("")
 
 	const navigation = useNavigation()
+
+	useEffect(() => {
+		if (email.trim() && password.trim()) {
+			setActive(true)
+		} else {
+			setActive(false)
+		}
+	}, [email, password])
 
 	return (
 		<KeyboardAvoidingView 
@@ -52,9 +63,9 @@ const SignIn: React.FC = () => {
 				<Content>
 					<Form>
 						<FormRow style={{ marginBottom: 20 }}>
-							<FormTitle>Sign In</FormTitle>
+							<FormTitle>Log In</FormTitle>
 							<TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-								<RegisterButtonText>Register here</RegisterButtonText>
+								<RegisterButtonText>Create an account</RegisterButtonText>
 							</TouchableOpacity>
 						</FormRow>
 						<Input 
@@ -65,14 +76,18 @@ const SignIn: React.FC = () => {
 							autoCapitalize="none"
 							returnKeyType="next"
 							autoCompleteType="email"
+							value={email}
+							onChangeText={(text) => setEmail(text)}
 						/>
 						<Input 
 							name="password" 
 							icon="lock"
 							placeholder="Password"
 							isPassword
+							value={password}
+							onChangeText={(text) => setPassword(text)}
 						/>
-						<FormRow style={{ marginTop: 25 }}>
+						<FormRow style={{ marginVertical: 25 }}>
 							<RememberInput 
 								activeOpacity={1} 
 								onPress={() => setChecked(!checked)}
@@ -87,9 +102,12 @@ const SignIn: React.FC = () => {
 								<ForgotPasswordText>Forgot my password</ForgotPasswordText>
 							</TouchableOpacity>
 						</FormRow>
-						<FormButton onPress={() => {}}>
-							<FormButtonText>Login</FormButtonText>
-						</FormButton>
+						
+						<Button isDisabled={!active}>
+							<ButtonText isActive={active}>
+								Log In
+							</ButtonText>
+						</Button>
 					</Form>
 				</Content>
 			</Container>

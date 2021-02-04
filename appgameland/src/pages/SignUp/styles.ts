@@ -1,8 +1,11 @@
-import { RectButton } from 'react-native-gesture-handler'
 import styled from 'styled-components/native'
 
 interface FormButtonProps {
 	step: number
+}
+
+interface ButtonTextProps {
+	isActive: boolean
 }
 
 export const Container = styled.ScrollView`
@@ -21,7 +24,7 @@ export const Header = styled.View`
 	align-self: center;
 `
 
-export const BackButton = styled(RectButton)`
+export const BackButton = styled.TouchableOpacity`
 	padding: 5px;
 `
 
@@ -66,18 +69,17 @@ export const FormTitle = styled.Text`
 `
 
 
-export const FormButton = styled(RectButton)<FormButtonProps>`
+export const FormButton = styled.TouchableOpacity<FormButtonProps>`
 	margin-top: 25px;
 	border-radius: 8px;
 	height: 56px;
-	background-color: ${({ step }) => step === 1 ? '#3c90ef' : '#04D361' };
 	align-items: center;
 	justify-content: center;
 `
 
-export const FormButtonText = styled.Text`
+export const FormButtonText = styled.Text<ButtonTextProps>`
 	font-size: 16px;
-	color: white;
+	color: ${({ isActive }) => isActive ? '#fff' : '#9c98a6'};
 	font-family: 'Poppins-SemiBold';
 `
 

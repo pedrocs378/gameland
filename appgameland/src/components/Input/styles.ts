@@ -1,8 +1,11 @@
 import styled from 'styled-components/native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
-import { RectButton } from 'react-native-gesture-handler'
 
-export const Container = styled.View`
+interface ContainerProps {
+	isFocused: boolean
+}
+
+export const Container = styled.View<ContainerProps>`
 	width: 100%;
 	background-color: #FAFAFC;
 	padding: 0 10px;
@@ -10,6 +13,9 @@ export const Container = styled.View`
 	border-radius: 8px;
 	flex-direction: row;
 	align-items: center;
+	border-left-width: 3px;
+	border-left-color: ${({ isFocused }) => isFocused ? "#3c90ef" : "transparent" };
+
 `
 
 export const InputText = styled.TextInput`

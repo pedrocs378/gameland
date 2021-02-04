@@ -39,7 +39,7 @@ const SignUpComplete: React.FC = () => {
 					Now yow are par of the Game Land platform.
 				</ContentSubtitle>
 			</Content>
-			<BackToLoginButton onPress={handleBackToLogin}>
+			<BackToLoginButton activeOpacity={0.6} onPress={handleBackToLogin}>
 				<BackToLoginButtonText>
 					Back to Log In
 				</BackToLoginButtonText>

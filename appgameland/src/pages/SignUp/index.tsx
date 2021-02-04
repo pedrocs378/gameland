@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
 import Toast from 'react-native-simple-toast'
@@ -20,7 +20,27 @@ import {
 	FormButtonText,
 } from './styles'
 
-const SignUpStepOne: React.FC = () => {
+interface SignUpStepOneProps {
+	name: string
+	lastName: string
+	onNameChange?: (text: string) => void
+	onLastNameChange?: (text: string) => void
+}
+
+interface SignUpStepTwoProps {
+	email: string
+	password: string
+	onEmailChange?: (text: string) => void
+	onPasswordChange?: (text: string) => void
+}
+
+const SignUpStepOne: React.FC<SignUpStepOneProps> = ({
+	name = "",
+	lastName = "",
+	onNameChange, 
+	onLastNameChange,
+}) => {
+	
 	return (
 		<>
 			<FormTitle style={{ marginBottom: 20 }}>
@@ -32,18 +52,27 @@ const SignUpStepOne: React.FC = () => {
 				placeholder="Name"
 				returnKeyType="next"
 				autoCapitalize="words"
+				value={name}
+				onChangeText={onNameChange}
 			/>
 			<Input 
 				name="last_name" 
 				icon="users"
 				placeholder="Last name"
 				autoCapitalize="words"
+				value={lastName}
+				onChangeText={onLastNameChange}
 			/>	
 		</>
 	)
 }
 
-const SignUpStepTwo: React.FC = () => {
+const SignUpStepTwo: React.FC<SignUpStepTwoProps> = ({ 
+	email = "",
+	password = "",
+	onEmailChange, 
+	onPasswordChange 
+}) => {
 	return (
 		<>
 			<FormTitle style={{ marginBottom: 20 }}>
@@ -57,12 +86,16 @@ const SignUpStepTwo: React.FC = () => {
 				returnKeyType="next"
 				autoCapitalize="none"
 				autoCompleteType="email"
+				value={email}
+				onChangeText={onEmailChange}
 			/>
 			<Input 
 				name="password" 
 				icon="lock"
 				placeholder="Password"
 				isPassword
+				value={password}
+				onChangeText={onPasswordChange}
 			/>	
 		</>
 	)
@@ -70,6 +103,12 @@ const SignUpStepTwo: React.FC = () => {
 
 const SignUp: React.FC = () => {
 	const [step, setStep] = useState(1)
+	const [active, setActive] = useState(false)
+
+	const [name, setName] = useState("")
+	const [lastName, setLastName] = useState("")
+	const [email, setEmail] = useState("")
+	const [password, setPassword] = useState("")
 
 	const navigation = useNavigation()
 
@@ -89,6 +128,34 @@ const SignUp: React.FC = () => {
 			navigation.goBack()
 		}
 	}, [step, navigation.goBack])
+
+	useEffect(() => {
+		if (step === 1) {
+			if (name.trim() && lastName.trim()) {
+				setActive(true)
+			} else {
+				setActive(false)
+			}
+		} else if (step === 2) {
+			if (email.trim() && password.trim()) {
+				setActive(true)
+			} else {
+				setActive(false)
+			}
+		}
+	}, [step ,name, lastName, email, password])
+
+	const buttonColor = useMemo(() => {
+		if (!active) {
+			return '#DCDCE5'
+		} else if (step === 1) {
+			return '#3c90ef'
+		} else if (step === 2) {
+			return '#04D361'
+		} else {
+			return '#04D361'
+		}
+	}, [active, step])
 	
 	return (
 		<KeyboardAvoidingView 
@@ -101,7 +168,7 @@ const SignUp: React.FC = () => {
 				contentContainerStyle={{ flex: 2 }}
 			>
 				<Header>
-					<BackButton onPress={handleBackToStepOneOrSignIn}>
+					<BackButton activeOpacity={0.6} onPress={handleBackToStepOneOrSignIn}>
 						<Icon name="arrow-left" size={30} color="#9C98A6" />
 					</BackButton>
 				</Header>
@@ -111,9 +178,38 @@ const SignUp: React.FC = () => {
 				</Intro>
 				<Content>
 					<Form>
-						{ step === 1 ? <SignUpStepOne /> : <SignUpStepTwo /> }
-						<FormButton step={step} onPress={handleGoToNextStepOrSubmit}>
-							<FormButtonText>
+
+						{ step === 1 ? (
+							<SignUpStepOne
+								name={name}
+								onNameChange={(text) => setName(text)}
+								lastName={lastName}
+								onLastNameChange={(text) => setLastName(text)}
+							/>
+						) : (
+							<SignUpStepTwo
+								email={email}
+								onEmailChange={(text) => {
+									setEmail(text)
+									console.log(text)
+								}}
+								password={password}
+								onPasswordChange={(text) => {
+									setPassword(text)
+									console.log(text)
+								}}
+							/>
+						)}
+
+						<FormButton 
+							activeOpacity={0.6} 
+							step={step} 
+							onPress={handleGoToNextStepOrSubmit}
+							style={{
+								backgroundColor: buttonColor
+							}}
+						>
+							<FormButtonText isActive={active}>
 								{step === 1 ? "Next" : "Register" }
 							</FormButtonText>
 						</FormButton>

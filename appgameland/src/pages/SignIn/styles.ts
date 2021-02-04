@@ -1,6 +1,9 @@
-import { RectButton } from 'react-native-gesture-handler'
-import { Checkbox } from 'react-native-paper'
 import styled from 'styled-components/native'
+import { Checkbox } from 'react-native-paper'
+
+interface ButtonTextProps {
+	isActive: boolean
+}
 
 export const Container = styled.ScrollView`
 	background-color: #F0F0F7;
@@ -24,8 +27,8 @@ export const IntroBackground = styled.Image`
 
 export const IntroTitle = styled.Text`
 	color: #fff;
-	font-size: 35px;
-	font-family: 'Poppins-SemiBold';
+	font-size: 50px;
+	font-family: 'LondrinaSolid-Regular';
 `
 
 export const IntroSubTitle = styled.Text`
@@ -88,19 +91,9 @@ export const ForgotPasswordText = styled.Text`
 	color: #9C98A6;
 `
 
-
-export const FormButton = styled(RectButton)`
-	margin-top: 25px;
-	border-radius: 8px;
-	height: 56px;
-	background-color: #04D361;
-	align-items: center;
-	justify-content: center;
-`
-
-export const FormButtonText = styled.Text`
+export const ButtonText = styled.Text<ButtonTextProps>`
 	font-size: 16px;
-	color: white;
+	color: ${({ isActive }) => isActive ? '#fff' : '#9c98a6'};
 	font-family: 'Poppins-SemiBold';
 `
 

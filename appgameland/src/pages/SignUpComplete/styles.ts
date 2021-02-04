@@ -1,6 +1,6 @@
-import { RectButton } from 'react-native-gesture-handler'
 import { getBottomSpace } from 'react-native-iphone-x-helper'
 import styled from 'styled-components/native'
+import Button from '../../components/Button'
 
 export const Container = styled.View`
 	flex: 1;
@@ -39,14 +39,10 @@ export const ContentSubtitle = styled.Text`
 	text-align: center;
 `
 
-export const BackToLoginButton = styled(RectButton)`
+export const BackToLoginButton = styled(Button)`
 	height: 60px;
 	width: 80%;
 	align-self: center;
-	background-color: #04D361;
-	border-radius: 8px;
-	justify-content: center;
-	align-items: center;
 	position: absolute;
 	bottom: ${60 + getBottomSpace()}px;
 `
