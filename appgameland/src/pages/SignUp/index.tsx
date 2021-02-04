@@ -189,15 +189,9 @@ const SignUp: React.FC = () => {
 						) : (
 							<SignUpStepTwo
 								email={email}
-								onEmailChange={(text) => {
-									setEmail(text)
-									console.log(text)
-								}}
+								onEmailChange={(text) => setEmail(text)}
 								password={password}
-								onPasswordChange={(text) => {
-									setPassword(text)
-									console.log(text)
-								}}
+								onPasswordChange={(text) => setPassword(text)}
 							/>
 						)}
 

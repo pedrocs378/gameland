@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { KeyboardAvoidingView, Platform, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
@@ -33,6 +33,13 @@ const SignIn: React.FC = () => {
 	const [password, setPassword] = useState("")
 
 	const navigation = useNavigation()
+
+	const handleSignIn = useCallback(() => {
+		navigation.reset({
+			routes: [{ name: 'App' }],
+			index: 0
+		})
+	}, [navigation.reset])
 
 	useEffect(() => {
 		if (email.trim() && password.trim()) {
@@ -103,7 +110,7 @@ const SignIn: React.FC = () => {
 							</TouchableOpacity>
 						</FormRow>
 						
-						<Button isDisabled={!active}>
+						<Button isDisabled={!active} onPress={handleSignIn}>
 							<ButtonText isActive={active}>
 								Log In
 							</ButtonText>
