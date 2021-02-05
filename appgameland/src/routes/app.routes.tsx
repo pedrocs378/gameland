@@ -4,6 +4,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather'
 import IoniconIcon from 'react-native-vector-icons/Ionicons'
 
 import Home from '../pages/Home'
+import Profile from '../pages/Profile'
 
 const { Navigator, Screen } = createBottomTabNavigator()
 
@@ -47,7 +48,7 @@ const AppRoutes: React.FC = () => {
 			/>
 			<Screen 
 				name="Profile" 
-				component={Home} 
+				component={Profile} 
 				options={{
 					title: 'Profile',
 					tabBarIcon: ({ color }) => 
