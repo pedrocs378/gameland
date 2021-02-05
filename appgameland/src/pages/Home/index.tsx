@@ -1,11 +1,15 @@
-import React from 'react'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { RectButton } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 
+import igdbConfig from '../../configs/igdb'
+import api from '../../services/api'
+
 import { 
 	Container,
-	SearchBox,
-	SearchBoxText,
+	SearchButton,
+	SearchButtonText,
 	GameSection,
 	HeaderSection,
 	Title,
@@ -15,14 +19,54 @@ import {
 	GameImage,
 } from './styles'
 
+interface CoverProps {
+	id: number
+	url: string
+	image_id: string
+}
+
+interface GameProps {
+	id: number
+	name: string
+	rating: number
+	first_release_date: number
+	cover: CoverProps
+}
+
 const Home: React.FC = () => {
+	const [popularGames, setPopularGames] = useState<GameProps[]>([])
+	const [releases, setReleases] = useState<GameProps[]>([])
+
+	const navigation = useNavigation()
+
+	const handleGetPopularGames = useCallback(() => {
+		api.post(
+			'/games',
+			'fields name, first_release_date, rating, cover.*; limit 20; sort rating desc; where rating != null & cover != null & rating >= 70;',
+		).then(response => {
+			setPopularGames(response.data)
+		})	
+	}, [])
+	const handleGetReleases = useCallback(() => {
+		api.post(
+			'/games',
+			'fields name, first_release_date, rating, cover.*; limit 20; sort first_release_date desc; where first_release_date != null & cover != null & first_release_date <= 1612559228 & rating >= 80;',
+		).then(response => {
+			setReleases(response.data)
+		})	
+	}, [])
+
+	useFocusEffect(() => {
+		handleGetPopularGames()
+		handleGetReleases()
+	})
 
 	return (
 		<Container>
-			<SearchBox>
+			<SearchButton onPress={() => navigation.navigate('Search')}>
 				<Icon name="search" size={18} color="#777" />
-				<SearchBoxText>Search...</SearchBoxText>
-			</SearchBox>
+				<SearchButtonText>Search...</SearchButtonText>
+			</SearchButton>
 			<GameSection>
 				<HeaderSection>
 					<Title>Popular games</Title>
@@ -31,16 +75,19 @@ const Home: React.FC = () => {
 					</RectButton>
 				</HeaderSection>
 				<Content 
-					pagingEnabled 
 					horizontal 
 					showsHorizontalScrollIndicator={false}
 				>
-					<Game activeOpacity={0.6}>
-						<GameImage
-							resizeMode="cover"
-							source={{ uri: 'https://images.igdb.com/igdb/image/upload/t_thumb/co2s0o.jpg' }}
-						/>
-					</Game>
+					{popularGames.map((game) => {
+						return (
+							<Game key={game.id} activeOpacity={0.6}>
+								<GameImage
+									resizeMode="cover"
+									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg` }}
+								/>
+							</Game>
+						)
+					})}
 				</Content>
 			</GameSection>
 			<GameSection>
@@ -51,16 +98,19 @@ const Home: React.FC = () => {
 					</RectButton>
 				</HeaderSection>
 				<Content 
-					pagingEnabled 
 					horizontal 
 					showsHorizontalScrollIndicator={false}
 				>
-					<Game activeOpacity={0.6}>
-						<GameImage
-							resizeMode="cover"
-							source={{ uri: 'https://images.igdb.com/igdb/image/upload/t_thumb/co2s0o.jpg' }}
-						/>
-					</Game>
+					{releases.map((game) => {
+						return (
+							<Game key={game.id} activeOpacity={0.6}>
+								<GameImage
+									resizeMode="cover"
+									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg` }}
+								/>
+							</Game>
+						)
+					})}
 				</Content>
 			</GameSection>
 		</Container>

@@ -5,7 +5,7 @@ export const Container = styled.ScrollView`
 	flex: 1;
 `
 
-export const SearchBox = styled(RectButton)`
+export const SearchButton = styled(RectButton)`
 	flex-direction: row;
 	align-items: center;
 	margin: 60px 20px 0;
@@ -14,7 +14,7 @@ export const SearchBox = styled(RectButton)`
 	border-radius: 5px;
 `
 
-export const SearchBoxText = styled.Text`
+export const SearchButtonText = styled.Text`
 	margin-left: 8px;
 	font-family: 'Poppins-Regular';
 	color: #777;

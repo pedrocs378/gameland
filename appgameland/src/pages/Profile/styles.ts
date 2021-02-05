@@ -1,5 +1,6 @@
-import { RectButton } from 'react-native-gesture-handler'
 import styled from 'styled-components/native'
+import { setLightness } from 'polished'
+import { RectButton } from 'react-native-gesture-handler'
 
 export const Container = styled.ScrollView`
 	flex: 1;
@@ -20,18 +21,18 @@ export const CardUserBackground = styled.Image`
 	height: 320px;
 `
 
-export const UserImageContainer = styled.View`
+export const UserAvatar = styled.View`
 	height: 180px;
 	width: 180px;
 	position: relative;
 `
 
-export const UserImage = styled.Image`
+export const Avatar = styled.Image`
 	height: 100%;
 	border-radius: 90px;
 `
 
-export const ChangeImageButton = styled(RectButton)`
+export const ChangeAvatarButton = styled(RectButton)`
 	position: absolute;
 	right: 0;
 	bottom: 0;
@@ -50,53 +51,17 @@ export const UserName = styled.Text`
 	color: #fff;
 `
 
-export const UserContainer = styled.View`
-	position: relative;
-	/* flex: 1; */
+export const EditProfileButton = styled(RectButton)`
+	background-color: ${setLightness(0.67, '#3c90ef')};
+	height: 35px;
+	padding: 0 15px;
+	border-radius: 20px;
+	align-items: center;
+	justify-content: center;
 `
 
-export const UserData = styled.View`
-	background-color: #fff;
-	position: absolute;
-	top: -50px;
-	width: 90%;
-	align-self: center;
-	border-radius: 10px;
-	padding: 30px 25px;
-`
-
-export const DataSection = styled.View`
-`
-
-export const TitleSection = styled.Text`
-	font-family: 'Poppins-SemiBold';
-	font-size: 20px;
-	color: #32264D;
-	margin-bottom: 10px;
-	padding-bottom: 5px;
-	border-bottom-width: 1px;
-	border-bottom-color: #E6E6F0;
-`
-
-export const InputSection = styled.View`
-	margin-top: 20px;
-`
-
-export const InputTitle = styled.Text`
-	color: #9C98A6;
+export const EditProfileButtonText = styled.Text`
+	color: white;
 	font-family: 'Poppins-Regular';
-	font-size: 12px;
-`
-
-export const Input = styled.TextInput`
-	background-color: #FAFAFC;
-	border-width: 1px;
-	border-color: #E6E6F0;
-	margin-top: 8px;
-	border-radius: 8px;
-	padding: 17px 30px;
-	color: #6A6180;
-	font-family: 'Poppins-Regular';
-	font-size: 14px;
 `
 
