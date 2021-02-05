@@ -42,7 +42,7 @@ const Home: React.FC = () => {
 	const handleGetPopularGames = useCallback(() => {
 		api.post(
 			'/games',
-			'fields name, first_release_date, rating, cover.*; limit 20; sort rating desc; where rating != null & cover != null & rating >= 70;',
+			'fields name, first_release_date, rating, cover.*; limit 20; sort rating desc; where rating != null & cover != null & rating >= 70 & rating_count >= 120 & first_release_date >= 1517858929;',
 		).then(response => {
 			setPopularGames(response.data)
 		})	
@@ -56,9 +56,12 @@ const Home: React.FC = () => {
 		})	
 	}, [])
 
+	const handleGoToGameInfo = useCallback((id: number) => {
+		navigation.navigate('GameInfo', { id })
+	}, [navigation.navigate])
+
 	useFocusEffect(() => {
 		handleGetPopularGames()
-		handleGetReleases()
 	})
 
 	return (
@@ -80,7 +83,11 @@ const Home: React.FC = () => {
 				>
 					{popularGames.map((game) => {
 						return (
-							<Game key={game.id} activeOpacity={0.6}>
+							<Game 
+								key={game.id} 
+								activeOpacity={0.6}
+								onPress={() => handleGoToGameInfo(game.id)}
+							>
 								<GameImage
 									resizeMode="cover"
 									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg` }}
