@@ -3,6 +3,8 @@ import { KeyboardAvoidingView, Platform, View } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native'
 import { Checkbox } from 'react-native-paper'
+import Toast from 'react-native-simple-toast'
+import * as Yup from 'yup'
 
 import Input from '../../components/Input'
 import Button from '../../components/Button'
@@ -25,6 +27,8 @@ import {
 	ForgotPasswordText,
 	ButtonText,
 } from './styles'
+import api from '../../services/api'
+import { useAuth } from '../../hooks/auth'
 
 const SignIn: React.FC = () => {
 	const [checked, setChecked] = useState(false)
@@ -32,14 +36,54 @@ const SignIn: React.FC = () => {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 
+	const { signIn } = useAuth()
+
 	const navigation = useNavigation()
 
-	const handleSignIn = useCallback(() => {
-		navigation.reset({
-			routes: [{ name: 'App' }],
-			index: 0
-		})
-	}, [navigation.reset])
+	const handleSignIn = useCallback(async () => {
+		try {
+			const data = {
+				email,
+				password
+			}
+
+			const schema = Yup.object().shape({
+				email: Yup.string().required('E-mail is required').email('Text a valid e-mail.'),
+				password: Yup.string().required('Password is required')
+			})
+
+			await schema.validate(data, {
+				abortEarly: false
+			})
+
+			await signIn({
+				email,
+				password
+			})
+
+			navigation.reset({
+				routes: [{ name: 'App' }],
+				index: 0
+			})
+		} catch (err) {
+			if (err instanceof Yup.ValidationError) {
+				let message = ''
+
+				err.inner.forEach((error, index) => {
+					if (index === err.inner.length-1) {
+						message = message + `${error.message}`
+					} else {
+						message = message + `${error.message}\n`
+					}
+				})
+
+				Toast.show(message, Toast.LONG)
+				return
+			}
+
+			Toast.show('An error has ocurred. Check your credentials.', Toast.LONG)
+		}
+	}, [navigation.reset, email, password])
 
 	useEffect(() => {
 		if (email.trim() && password.trim()) {

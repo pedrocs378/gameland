@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, View, StatusBar } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { Rating } from 'react-native-elements'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
 
-import api from '../../services/api'
+import igdbApi from '../../services/igdbApi'
 
 import {
 	Container,
@@ -38,7 +38,7 @@ const GameInfo: React.FC = () => {
 	const { id } = params as RouteParams
 
 	useEffect(() => {
-		api.post(
+		igdbApi.post(
 			'/games',
 			`fields *, cover.*; where id = ${id};`
 		).then(response => {

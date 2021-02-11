@@ -1,10 +1,10 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { RectButton } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 
 import igdbConfig from '../../configs/igdb'
-import api from '../../services/api'
+import igdbApi from '../../services/igdbApi'
 
 import { 
 	Container,
@@ -40,7 +40,7 @@ const Home: React.FC = () => {
 	const navigation = useNavigation()
 
 	const handleGetPopularGames = useCallback(() => {
-		api.post(
+		igdbApi.post(
 			'/games',
 			'fields name, first_release_date, rating, cover.*; limit 20; sort rating desc; where rating != null & cover != null & rating >= 70 & rating_count >= 120 & first_release_date >= 1517858929;',
 		).then(response => {
@@ -48,7 +48,7 @@ const Home: React.FC = () => {
 		})	
 	}, [])
 	const handleGetReleases = useCallback(() => {
-		api.post(
+		igdbApi.post(
 			'/games',
 			'fields name, first_release_date, rating, cover.*; limit 20; sort first_release_date desc; where first_release_date != null & cover != null & first_release_date <= 1612559228 & rating >= 80;',
 		).then(response => {
