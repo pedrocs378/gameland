@@ -18,11 +18,11 @@ const Routes: React.FC = () => {
 				headerShown: false
 			}}
 		>
+			<Screen name="Auth" component={AuthRoutes} />
 			<Screen name="App" component={AppRoutes} />
 			<Screen name="ProfileRoute" component={ProfileRoutes} />
 			<Screen name="Search" component={Search} />
 			<Screen name="GameInfo" component={GameInfo} />
-			<Screen name="Auth" component={AuthRoutes} />
 		</Navigator>
 	)
 }

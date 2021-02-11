@@ -70,6 +70,7 @@ const GameInfo: React.FC = () => {
 				<GameTitle>{game.name}</GameTitle>
 				<RatingContainer>
 					<Rating
+						type="custom"
 						imageSize={20}
 						readonly					
 					/>

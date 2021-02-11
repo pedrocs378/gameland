@@ -1,0 +1,11 @@
+{
+	"name": "default",
+	"type": "mongodb",
+	"host": "localhost",
+	"port": 27017,
+	"database": "gameland",
+	"useUnifiedTopology": true,
+	"entities": [
+		"./src/modules/**/infra/typeorm/schemas/*.ts"
+	]
+}
