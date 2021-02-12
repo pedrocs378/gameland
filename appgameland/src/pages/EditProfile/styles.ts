@@ -12,7 +12,6 @@ export const UserData = styled.View`
 	align-self: center;
 	border-radius: 10px;
 	padding: 30px 25px;
-	margin-top: 50px;
 `
 
 export const TitleSection = styled.Text`

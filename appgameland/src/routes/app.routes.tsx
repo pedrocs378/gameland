@@ -25,6 +25,7 @@ const AppRoutes: React.FC = () => {
 				name="EditProfile" 
 				component={EditProfile}
 				options={{
+					headerShown: true,
 					header: () => <Header title="Edit your profile" />
 				}}
 			/>
