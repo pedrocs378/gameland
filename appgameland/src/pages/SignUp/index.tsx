@@ -3,8 +3,10 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { KeyboardAvoidingView, Platform } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
 import Toast from 'react-native-simple-toast'
+import * as Yup from 'yup'
 
 import Input from '../../components/Input'
+import api from '../../services/api'
 
 import { 
 	Container,
@@ -106,20 +108,58 @@ const SignUp: React.FC = () => {
 	const [active, setActive] = useState(false)
 
 	const [name, setName] = useState("")
-	const [lastName, setLastName] = useState("")
+	const [last_name, setLastName] = useState("")
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 
 	const navigation = useNavigation()
 
-	const handleGoToNextStepOrSubmit = useCallback(() => {
+	const handleGoToNextStepOrSubmit = useCallback(async () => {
 		if (step === 1) {
 			setStep(2)
 		} else {
-			Toast.show('Register successful', Toast.LONG)
-			navigation.navigate('SignUpComplete')
+			try {
+				const data = {
+					name,
+					last_name,
+					email,
+					password
+				}
+	
+				const schema = Yup.object().shape({
+					name: Yup.string().required('Name is required'),
+					last_name: Yup.string().required('Last name is required'),
+					email: Yup.string().required('E-mail is required').email('Text a valid e-mail'),
+					password: Yup.string().min(6, 'Password must be at least 6 characters')
+				})
+	
+				await schema.validate(data, {
+					abortEarly: false
+				})
+
+				await api.post('/users', data)
+
+				navigation.navigate('SignUpComplete')
+			} catch (err) {
+				if (err instanceof Yup.ValidationError) {
+					let message = ''
+	
+					err.inner.forEach((error, index) => {
+						if (index === err.inner.length-1) {
+							message = message + `${error.message}`
+						} else {
+							message = message + `${error.message}\n`
+						}
+					})
+	
+					Toast.show(message, Toast.LONG)
+					return
+				}
+	
+				Toast.show('An error has ocurred. Try again.', Toast.LONG)
+			}
 		}
-	}, [step, navigation.navigate])
+	}, [step, navigation.navigate, name, last_name, email, password])
 
 	const handleBackToStepOneOrSignIn = useCallback(() => {
 		if (step !== 1) {
@@ -131,7 +171,7 @@ const SignUp: React.FC = () => {
 
 	useEffect(() => {
 		if (step === 1) {
-			if (name.trim() && lastName.trim()) {
+			if (name.trim() && last_name.trim()) {
 				setActive(true)
 			} else {
 				setActive(false)
@@ -143,7 +183,7 @@ const SignUp: React.FC = () => {
 				setActive(false)
 			}
 		}
-	}, [step ,name, lastName, email, password])
+	}, [step ,name, last_name, email, password])
 
 	const buttonColor = useMemo(() => {
 		if (!active) {
@@ -183,7 +223,7 @@ const SignUp: React.FC = () => {
 							<SignUpStepOne
 								name={name}
 								onNameChange={(text) => setName(text)}
-								lastName={lastName}
+								lastName={last_name}
 								onLastNameChange={(text) => setLastName(text)}
 							/>
 						) : (
