@@ -36,6 +36,7 @@ interface GameProps {
 const Home: React.FC = () => {
 	const [popularGames, setPopularGames] = useState<GameProps[]>([])
 	const [releases, setReleases] = useState<GameProps[]>([])
+	const [isSubscribed, setIsSubscribed] = useState(true)
 
 	const navigation = useNavigation()
 
@@ -44,9 +45,12 @@ const Home: React.FC = () => {
 			'/games',
 			'fields name, first_release_date, rating, cover.*; limit 20; sort rating desc; where rating != null & cover != null & rating >= 70 & rating_count >= 120 & first_release_date >= 1517858929;',
 		).then(response => {
-			setPopularGames(response.data)
+			if (isSubscribed) {
+				setPopularGames(response.data)
+			}
 		})	
-	}, [])
+	}, [isSubscribed])
+	
 	const handleGetReleases = useCallback(() => {
 		igdbApi.post(
 			'/games',
@@ -62,6 +66,10 @@ const Home: React.FC = () => {
 
 	useFocusEffect(() => {
 		handleGetPopularGames()
+
+		return () => {
+			return setIsSubscribed(false)
+		}
 	})
 
 	return (

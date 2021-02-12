@@ -34,9 +34,9 @@ const AuthProvider: React.FC = ({ children }) => {
 	const [loading, setLoading] = useState(true)
 	
 	useEffect(() => {
-		let isSubscribed = true
 
 		async function loadStoragedData(): Promise<void> {
+			
 			const [token, user] = await AsyncStorage.multiGet(['@GameLand:token', '@GameLand:user'])
 
 			if (token[1] && user[1]) {
@@ -46,17 +46,11 @@ const AuthProvider: React.FC = ({ children }) => {
 			}
 
 			setLoading(false)
+			
 		}
 
-		if (isSubscribed) {
-			loadStoragedData()
-		}
+		loadStoragedData()
 
-		return () => {
-			setData({} as AuthState)
-			setLoading(false)
-			isSubscribed = false
-		}
 	}, [])
 
 	const signIn = useCallback(async ({ email, password }) => {

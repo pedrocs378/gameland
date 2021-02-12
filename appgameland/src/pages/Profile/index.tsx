@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/Feather'
 
-import background from '../../assets/introBackground.png'
 import { useAuth } from '../../hooks/auth'
+
+import background from '../../assets/introBackground.png'
 
 import {
 	Container,
@@ -37,10 +38,6 @@ const Profile: React.FC = () => {
 				}
 			})
 	}, [])
-
-	const firstName = useMemo(() => {
-		return user.name.split(' ')[0]
-	}, [user.name])
 
 	return (
 		<Container contentContainerStyle={{ flex: 1}}>
