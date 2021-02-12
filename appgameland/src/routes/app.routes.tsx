@@ -1,60 +1,35 @@
 import React from 'react'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import FeatherIcon from 'react-native-vector-icons/Feather'
-import IoniconIcon from 'react-native-vector-icons/Ionicons'
+import { createStackNavigator } from '@react-navigation/stack'
 
-import Home from '../pages/Home'
-import Profile from '../pages/Profile'
+import Header from '../components/Header'
 
-const { Navigator, Screen } = createBottomTabNavigator()
+import HomeTabsRoutes from './homeTabs.routes'
+
+import Search from '../pages/Search'
+import GameInfo from '../pages/GameInfo'
+import EditProfile from '../pages/EditProfile'
+
+const { Navigator, Screen } = createStackNavigator()
 
 const AppRoutes: React.FC = () => {
 
 	return (
 		<Navigator
-			tabBarOptions={{
-				activeTintColor: '#32264D',
-				inactiveTintColor: '#C1BCCC',
-				showLabel: true,
-				iconStyle: {
-					marginBottom: -5
-				},
-				labelStyle: {
-					fontFamily: 'Poppins-Regular',
-					fontSize: 11,
-				},
-				style: {
-					height: 60,
-				}
+			screenOptions={{
+				headerShown: false
 			}}
 		>
+			<Screen name="HomeTabs" component={HomeTabsRoutes} />
+			
 			<Screen 
-				name="Home" 
-				component={Home}
+				name="EditProfile" 
+				component={EditProfile}
 				options={{
-					title: 'Home',
-					tabBarIcon: ({ color }) => 
-						<FeatherIcon name="home" color={color} size={30} />
+					header: () => <Header title="Edit your profile" />
 				}}
 			/>
-			<Screen 
-				name="UserGames" 
-				component={Home} 
-				options={{
-					title: 'My Games',
-					tabBarIcon: ({ color }) => 
-						<IoniconIcon name="game-controller-outline" color={color} size={30} />
-				}}
-			/>
-			<Screen 
-				name="Profile" 
-				component={Profile} 
-				options={{
-					title: 'Profile',
-					tabBarIcon: ({ color }) => 
-						<FeatherIcon name="user" color={color} size={30} />
-				}}
-			/>
+			<Screen name="Search" component={Search} />
+			<Screen name="GameInfo" component={GameInfo} />
 		</Navigator>
 	)
 }

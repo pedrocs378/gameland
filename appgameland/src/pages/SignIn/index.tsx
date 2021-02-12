@@ -60,11 +60,6 @@ const SignIn: React.FC = () => {
 				email,
 				password
 			})
-
-			navigation.reset({
-				routes: [{ name: 'App' }],
-				index: 0
-			})
 		} catch (err) {
 			if (err instanceof Yup.ValidationError) {
 				let message = ''

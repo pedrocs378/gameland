@@ -1,9 +1,10 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/Feather'
 
 import background from '../../assets/introBackground.png'
+import { useAuth } from '../../hooks/auth'
 
 import {
 	Container,
@@ -15,10 +16,13 @@ import {
 	UserName,
 	EditProfileButton,
 	EditProfileButtonText,
+	SignOutButton,
 } from './styles'
 
 const Profile: React.FC = () => {
 	const [uriImage, setUriImage] = useState("")
+
+	const { user, signOut } = useAuth()
 
 	const navigation = useNavigation()
 
@@ -33,6 +37,10 @@ const Profile: React.FC = () => {
 				}
 			})
 	}, [])
+
+	const firstName = useMemo(() => {
+		return user.name.split(' ')[0]
+	}, [user.name])
 
 	return (
 		<Container contentContainerStyle={{ flex: 1}}>
@@ -52,12 +60,15 @@ const Profile: React.FC = () => {
 						<Icon name="camera" size={27} color="#FFF" />
 					</ChangeAvatarButton>
 				</UserAvatar>
-				<UserName>Pedro César</UserName>
-				<EditProfileButton onPress={() => navigation.navigate('ProfileRoute')}>
+				<UserName>{user.name}</UserName>
+				<EditProfileButton onPress={() => navigation.navigate('EditProfile')}>
 					<EditProfileButtonText>Edit profile</EditProfileButtonText>
 				</EditProfileButton>
 			</CardUser>
 			
+			<SignOutButton onPress={signOut}>
+				<Icon name="log-out" size={27} color="#FFF" />
+			</SignOutButton>
 		</Container>
 	)
 }

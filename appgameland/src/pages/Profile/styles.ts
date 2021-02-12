@@ -4,6 +4,8 @@ import { RectButton } from 'react-native-gesture-handler'
 
 export const Container = styled.ScrollView`
 	flex: 1;
+
+	position: relative;
 `
 
 export const CardUser = styled.View`
@@ -46,6 +48,7 @@ export const ChangeAvatarButton = styled(RectButton)`
 
 export const UserName = styled.Text`
 	font-size: 28px;
+	text-align: center;
 	margin-top: 20px;
 	font-family: 'Poppins-SemiBold';
 	color: #fff;
@@ -63,5 +66,18 @@ export const EditProfileButton = styled(RectButton)`
 export const EditProfileButtonText = styled.Text`
 	color: white;
 	font-family: 'Poppins-Regular';
+`
+
+export const SignOutButton = styled(RectButton)`
+	background: #3c90ef;
+
+	position: absolute;
+	bottom: 10px;
+	left: 20px;
+	right: 20px;
+	align-items: center;
+	justify-content: center;
+	height: 55px;
+	border-radius: 8px;
 `
 
