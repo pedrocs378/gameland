@@ -14,8 +14,6 @@ export const CardUser = styled.View`
 	justify-content: center;
 	align-items: center;
 
-	position: relative;
-
 `
 
 export const CardUserBackground = styled.Image`
@@ -49,9 +47,18 @@ export const ChangeAvatarButton = styled(RectButton)`
 export const UserName = styled.Text`
 	font-size: 28px;
 	text-align: center;
-	margin-top: 20px;
+	margin-top: 10px;
 	font-family: 'Poppins-SemiBold';
 	color: #fff;
+`
+
+export const UserDescription = styled.Text`
+	font-size: 14px;
+	text-align: center;
+	font-family: 'Poppins-Regular';
+	color:  ${setLightness(0.9, '#3c90ef')};
+	max-width: 300px;
+	margin-bottom: 10px;
 `
 
 export const EditProfileButton = styled(RectButton)`

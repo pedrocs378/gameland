@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather'
+import Toast from 'react-native-simple-toast'
+import * as Yup from 'yup'
 
 import { useAuth } from '../../hooks/auth'
 
@@ -12,10 +14,61 @@ import {
 	UserData,
 	SaveButton,
 } from './styles'
+import api from '../../services/api'
 
 const EditProfile: React.FC = () => {
+	const { user, updateUser } = useAuth()
+	
+	const [name, setName] = useState(user.name)
+	const [last_name, setLastName] = useState(user.last_name)
+	const [email, setEmail] = useState(user.email)
+	const [description, setDescription] = useState(user.description || "")
 
-	const { user } = useAuth()
+
+	const handleSave = useCallback(async () => {
+		try {
+			const data = {
+				name,
+				last_name,
+				email,
+				description
+			}
+	
+			const schema = Yup.object().shape({
+				name: Yup.string().required('Name is required'),
+				last_name: Yup.string().required('Last name is required'),
+				email: Yup.string().required('E-mail is required').email('Text a valid e-mail'),
+				description: Yup.string().max(200)
+			})
+	
+			await schema.validate(data, {
+				abortEarly: false
+			})
+
+			const response = await api.put('/profile', data)
+
+			updateUser(response.data)
+
+			Toast.show('Succesfull', Toast.LONG)
+		} catch (err) {
+			if (err instanceof Yup.ValidationError) {
+				let message = ''
+
+				err.inner.forEach((error, index) => {
+					if (index === err.inner.length-1) {
+						message = message + `${error.message}`
+					} else {
+						message = message + `${error.message}\n`
+					}
+				})
+
+				Toast.show(message, Toast.LONG)
+				return
+			}
+
+			Toast.show('An error has ocurred. Try again.', Toast.LONG)
+		}
+	}, [name, last_name, email, description, updateUser])
 
 	return (
 		<Container>
@@ -26,7 +79,8 @@ const EditProfile: React.FC = () => {
 					<Input
 						selectTextOnFocus
 						autoCapitalize="words"
-						defaultValue={user.name}
+						value={name}
+						onChangeText={(text) => setName(text)}
 					/>
 				</InputSection>
 				<InputSection>
@@ -34,7 +88,8 @@ const EditProfile: React.FC = () => {
 					<Input
 						selectTextOnFocus
 						autoCapitalize="words"
-						defaultValue={user.last_name}
+						value={last_name}
+						onChangeText={(text) => setLastName(text)}
 					/>
 				</InputSection>
 				<InputSection>
@@ -45,17 +100,24 @@ const EditProfile: React.FC = () => {
 						keyboardType="email-address"		
 						returnKeyType="next"
 						autoCompleteType="email"
-						defaultValue={user.email}
+						value={email}
+						onChangeText={(text) => setEmail(text)}
 					/>
 				</InputSection>
 				<InputSection>
 					<InputTitle>Your description</InputTitle>
 					<Input
 						multiline
+						editable
+						maxLength={200}
+						textAlignVertical="top"
+						numberOfLines={5}
+						value={description}
+						onChangeText={(text) => setDescription(text)}
 					/>
 				</InputSection>
 			</UserData>
-			<SaveButton>
+			<SaveButton onPress={handleSave}>
 				<Icon name="save" size={30} color="#fff" />
 			</SaveButton>
 		</Container>

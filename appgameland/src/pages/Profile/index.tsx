@@ -1,5 +1,5 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { launchImageLibrary } from 'react-native-image-picker'
 import Icon from 'react-native-vector-icons/Feather'
 
@@ -15,6 +15,7 @@ import {
 	Avatar,
 	ChangeAvatarButton,
 	UserName,
+	UserDescription,
 	EditProfileButton,
 	EditProfileButtonText,
 	SignOutButton,
@@ -58,9 +59,16 @@ const Profile: React.FC = () => {
 					</ChangeAvatarButton>
 				</UserAvatar>
 				<UserName>{user.name}</UserName>
+				{
+					user.description && (
+						<UserDescription>
+							{ user.description }
+						</UserDescription>
+					)
+				}
 				<EditProfileButton onPress={() => navigation.navigate('EditProfile')}>
 					<EditProfileButtonText>Edit profile</EditProfileButtonText>
-				</EditProfileButton>
+				</EditProfileButton>			
 			</CardUser>
 			
 			<SignOutButton onPress={signOut}>

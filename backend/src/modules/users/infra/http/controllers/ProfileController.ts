@@ -11,6 +11,7 @@ export default class ProfileController {
 			name,
 			last_name, 
 			email,
+			description
 		} = request.body
 		const { id } = request.user
 
@@ -33,6 +34,7 @@ export default class ProfileController {
 		user.name = name
 		user.last_name = last_name
 		user.email = email
+		user.description = description
 
 		await usersRepository.save(user)
 
