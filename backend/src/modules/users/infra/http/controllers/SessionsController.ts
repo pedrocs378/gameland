@@ -12,9 +12,9 @@ export default class SessionsController {
 	public async create(request: Request, response: Response): Promise<Response> {
 		const { email, password } = request.body
 
-		const userRepository = getMongoRepository(User)
+		const usersRepository = getMongoRepository(User)
 
-		const user = await userRepository.findOne({
+		const user = await usersRepository.findOne({
 			where: { email }
 		})
 

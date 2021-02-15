@@ -15,9 +15,9 @@ export default class UsersController {
 			password
 		} = request.body
 
-		const userRepository = getMongoRepository(User)
+		const usersRepository = getMongoRepository(User)
 
-		const isUserExists = await userRepository.findOne({
+		const isUserExists = await usersRepository.findOne({
 			where: { email }
 		})
 
@@ -27,14 +27,14 @@ export default class UsersController {
 
 		const hashedPassword = await hash(password, 10)
 
-		const user = userRepository.create({
+		const user = usersRepository.create({
 			name,
 			last_name, 
 			email,
 			password: hashedPassword
 		})
 
-		await userRepository.save(user)
+		await usersRepository.save(user)
 
 		return response.json(classToClass(user))
 	}

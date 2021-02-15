@@ -8,6 +8,6 @@ const profileController = new ProfileController()
 
 const profileRouter = Router()
 
-profileRouter.put('/', ensureAuthenticated ,profileController.update)
+profileRouter.put('/', ensureAuthenticated, profileController.update)
 
 export default profileRouter

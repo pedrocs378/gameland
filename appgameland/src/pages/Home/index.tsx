@@ -3,8 +3,7 @@ import React, { useCallback, useState } from 'react'
 import { RectButton } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 
-import igdbConfig from '../../configs/igdb'
-import igdbApi from '../../services/igdbApi'
+import api from '../../services/api'
 
 import { 
 	Container,
@@ -40,32 +39,21 @@ const Home: React.FC = () => {
 
 	const navigation = useNavigation()
 
-	const handleGetPopularGames = useCallback(() => {
-		igdbApi.post(
-			'/games',
-			'fields name, first_release_date, rating, cover.*; limit 20; sort rating desc; where rating != null & cover != null & rating >= 70 & rating_count >= 120 & first_release_date >= 1517858929;',
-		).then(response => {
-			if (isSubscribed) {
-				setPopularGames(response.data)
-			}
-		})	
-	}, [isSubscribed])
-	
-	const handleGetReleases = useCallback(() => {
-		igdbApi.post(
-			'/games',
-			'fields name, first_release_date, rating, cover.*; limit 20; sort first_release_date desc; where first_release_date != null & cover != null & first_release_date <= 1612559228 & rating >= 80;',
-		).then(response => {
-			setReleases(response.data)
-		})	
-	}, [])
-
 	const handleGoToGameInfo = useCallback((id: number) => {
 		navigation.navigate('GameInfo', { id })
 	}, [navigation.navigate])
 
 	useFocusEffect(() => {
-		handleGetPopularGames()
+		api.get('/games/popular').then((response) => {
+			if (isSubscribed) {
+				setPopularGames(response.data)
+			}
+		})
+		api.get('/games/releases').then((response) => {
+			if (isSubscribed) {
+				setReleases(response.data)
+			}
+		})
 
 		return () => {
 			return setIsSubscribed(false)
@@ -107,7 +95,7 @@ const Home: React.FC = () => {
 			</GameSection>
 			<GameSection>
 				<HeaderSection>
-					<Title>Releases</Title>
+					<Title>New Releases</Title>
 					<RectButton>
 						<ShowMoreButtonText>See all</ShowMoreButtonText>
 					</RectButton>
@@ -118,7 +106,11 @@ const Home: React.FC = () => {
 				>
 					{releases.map((game) => {
 						return (
-							<Game key={game.id} activeOpacity={0.6}>
+							<Game 
+								key={game.id} 
+								activeOpacity={0.6} 
+								onPress={() => handleGoToGameInfo(game.id)}
+							>
 								<GameImage
 									resizeMode="cover"
 									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg` }}
