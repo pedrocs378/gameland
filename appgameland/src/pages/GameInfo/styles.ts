@@ -1,4 +1,5 @@
 import styled from 'styled-components/native'
+import { setLightness } from 'polished'
 import { RectButton } from 'react-native-gesture-handler'
 
 export const Container = styled.ScrollView`
@@ -14,16 +15,36 @@ export const BackButton = styled(RectButton)`
 	position: absolute;
 	top: 50px;
 	left: 20px;
-	height: 50px;
-	width: 50px;
-	border-radius: 25px;
-	background-color: #3c90ef;
+	height: 60px;
+	width: 60px;
+	border-radius: 15px;
+	opacity: 0.8;
+	background-color: ${setLightness(0.6, '#3c90ef')};
 	align-items: center;
 	justify-content: center;
 `
 
+export const AddGameButton = styled(RectButton)`
+	position: absolute;
+	bottom: -30px;
+	right: 30px;
+	background-color: ${setLightness(0.4, '#3c90ef')};
+	height: 60px;
+	width: 170px;
+	align-items: center;
+	justify-content: center;
+	border-radius: 15px;
+`
+
+export const AddGameButtonText = styled.Text`
+	font-family: 'Poppins-SemiBold';
+	color: #fff;
+	font-size: 17px;
+`
+
+
 export const Content = styled.View`
-	
+	z-index: -1;
 `
 
 export const Section = styled.View`

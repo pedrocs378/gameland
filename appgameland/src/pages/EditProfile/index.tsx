@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/Feather'
 import Toast from 'react-native-simple-toast'
 import * as Yup from 'yup'
@@ -23,6 +23,7 @@ const EditProfile: React.FC = () => {
 	const [last_name, setLastName] = useState(user.last_name)
 	const [email, setEmail] = useState(user.email)
 	const [description, setDescription] = useState(user.description || "")
+	const [buttonEnabled, setButtonEnabled] = useState(true)
 
 
 	const handleSave = useCallback(async () => {
@@ -69,6 +70,17 @@ const EditProfile: React.FC = () => {
 			Toast.show('An error has ocurred. Try again.', Toast.LONG)
 		}
 	}, [name, last_name, email, description, updateUser])
+
+	useEffect(() => {
+
+		if ((name === user.name) && (last_name === user.last_name) && (email === user.email) && (description === user.description)) {
+			setButtonEnabled(false)
+		} else {
+			setButtonEnabled(true)
+		}
+		
+
+	}, [name, last_name, email, description, user.name, user.last_name, user.email, user.description])
 
 	return (
 		<Container>
@@ -117,7 +129,13 @@ const EditProfile: React.FC = () => {
 					/>
 				</InputSection>
 			</UserData>
-			<SaveButton onPress={handleSave}>
+			<SaveButton 
+				enabled={buttonEnabled} 
+				onPress={handleSave}
+				style={{
+					opacity: buttonEnabled ? 1 : 0
+				}}
+			>
 				<Icon name="save" size={30} color="#fff" />
 			</SaveButton>
 		</Container>

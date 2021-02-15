@@ -86,7 +86,7 @@ const Home: React.FC = () => {
 							>
 								<GameImage
 									resizeMode="cover"
-									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg` }}
+									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
 								/>
 							</Game>
 						)
@@ -113,7 +113,7 @@ const Home: React.FC = () => {
 							>
 								<GameImage
 									resizeMode="cover"
-									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg` }}
+									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
 								/>
 							</Game>
 						)

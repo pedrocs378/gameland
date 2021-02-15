@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
-import { Rating } from 'react-native-ratings'
 import { useNavigation, useRoute } from '@react-navigation/native'
+import { Rating } from 'react-native-ratings'
 import Icon from 'react-native-vector-icons/Feather'
 import { format } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
@@ -10,6 +10,8 @@ import {
 	Container,
 	GameImage,
 	BackButton,
+	AddGameButton,
+	AddGameButtonText,
 	Content,
 	Section,
 	SectionTitle,
@@ -139,6 +141,9 @@ const GameInfo: React.FC = () => {
 				<BackButton onPress={() => navigation.goBack()} >
 					<Icon name="arrow-left" size={30} color="#fff" />
 				</BackButton>
+				<AddGameButton>
+					<AddGameButtonText>Add game</AddGameButtonText>
+				</AddGameButton>
 			</GameImage>
 			<Content>
 				<Section>
@@ -149,6 +154,7 @@ const GameInfo: React.FC = () => {
 							imageSize={21}
 							readonly
 							tintColor="#fff"
+							ratingColor="#ff9000"
 							startingValue={ratingValue}
 							style={{
 								backgroundColor: 'transparent',
