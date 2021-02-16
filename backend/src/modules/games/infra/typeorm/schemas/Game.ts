@@ -7,16 +7,30 @@ import {
 	UpdateDateColumn 
 } from 'typeorm'
 
-interface Platform {
-	
-}
+import { GameObject } from './GameObject'
 
+// interface Platform {
+// 	id: number
+// 	name: string
+// 	abbreviation: string
+// }
+
+// interface GameObject {
+// 	id: number
+// 	cover_url: string
+// 	platforms: Platform[]
+// }
+
+@Entity('games')
 class Game {
 	@ObjectIdColumn()
 	id: ObjectID
 
-	@Column()
-	game_id: number
+	@Column({ nullable: false, unique: true })
+	user_id: ObjectID
+
+	@Column(type => GameObject)
+	games: GameObject[]
 
 	@CreateDateColumn()
 	created_at: Date
