@@ -1,6 +1,10 @@
-import styled from 'styled-components/native'
+import styled, { css } from 'styled-components/native'
 import { setLightness } from 'polished'
 import { RectButton } from 'react-native-gesture-handler'
+
+interface AddGameButtonProps {
+	isGameAdded: boolean
+}
 
 export const Container = styled.ScrollView`
 	flex: 1;
@@ -24,11 +28,11 @@ export const BackButton = styled(RectButton)`
 	justify-content: center;
 `
 
-export const AddGameButton = styled(RectButton)`
+export const AddGameButton = styled(RectButton)<AddGameButtonProps>`
 	position: absolute;
 	bottom: -30px;
 	right: 30px;
-	background-color: ${setLightness(0.4, '#3c90ef')};
+	background-color: ${({ isGameAdded }) => isGameAdded ? '#ff2000' : '#3c90ef'};
 	height: 60px;
 	width: 170px;
 	align-items: center;

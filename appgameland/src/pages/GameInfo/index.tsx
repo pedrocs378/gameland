@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import { Rating } from 'react-native-ratings'
 import Icon from 'react-native-vector-icons/Feather'
+import Toast from 'react-native-simple-toast'
 import { format } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 
@@ -69,6 +70,7 @@ interface RouteParams {
 
 const GameInfo: React.FC = () => {
 	const [game, setGame] = useState<GameProps>({} as GameProps)
+	const [isGameAdded, setIsGameAdded] = useState(false)
 
 	const navigation = useNavigation()
 	const { params } = useRoute()
@@ -78,6 +80,43 @@ const GameInfo: React.FC = () => {
 		api.get(`/games/${id}`).then(response => {
 			setGame(response.data)
 		})
+	}, [id])
+
+	useEffect(() => {
+		api.get(`/games/${id}/me`).then(response => {
+			if (response.data.found) {
+				setIsGameAdded(true)
+			} else {
+				setIsGameAdded(false)
+			}
+		})
+	}, [id])
+
+	const handleSaveOrRemoveGame = useCallback(async () => {
+		const response = await api.get(`/games/${id}/me`)
+
+		if (response.data.found) {
+			setIsGameAdded(false)
+			const apiResponse = await api.delete(`/games/${id}/me`)
+
+			if (apiResponse.status === 200) {
+				Toast.show('Removed', Toast.LONG)
+			} else {
+				setIsGameAdded(true)
+				Toast.show('Error', Toast.LONG)
+			}
+			
+		} else {
+			setIsGameAdded(true)
+			const apiResponse = await api.post(`/games/${id}/me`)
+
+			if (apiResponse.status === 200) {
+				Toast.show('Added', Toast.LONG)
+			} else {
+				setIsGameAdded(false)
+				Toast.show('Error', Toast.LONG)
+			}
+		}
 	}, [id])
 
 	const ratingValue = useMemo(() => {
@@ -141,8 +180,10 @@ const GameInfo: React.FC = () => {
 				<BackButton onPress={() => navigation.goBack()} >
 					<Icon name="arrow-left" size={30} color="#fff" />
 				</BackButton>
-				<AddGameButton>
-					<AddGameButtonText>Add game</AddGameButtonText>
+				<AddGameButton isGameAdded={isGameAdded} onPress={handleSaveOrRemoveGame}>
+					<AddGameButtonText>
+						{isGameAdded ? "Remove game" : "Add game"}
+					</AddGameButtonText>
 				</AddGameButton>
 			</GameImage>
 			<Content>
