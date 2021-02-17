@@ -43,8 +43,9 @@ const HomeRoutes: React.FC = () => {
 				component={UserGames} 
 				options={{
 					title: 'My Games',
-					tabBarIcon: ({ color }) => 
+					tabBarIcon: ({ color }) => (
 						<IoniconIcon name="game-controller-outline" color={color} size={30} />
+					)
 				}}
 			/>
 			<Screen 

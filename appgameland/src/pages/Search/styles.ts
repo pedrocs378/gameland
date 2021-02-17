@@ -1,5 +1,7 @@
-import { RectButton } from 'react-native-gesture-handler'
 import styled from 'styled-components/native'
+import { FlatList, RectButton } from 'react-native-gesture-handler'
+
+import { GameResponse } from './index'
 
 export const Container = styled.View`
 	flex: 1;
@@ -37,7 +39,7 @@ export const ClearButton = styled(RectButton)`
 	justify-content: center;
 `
 
-export const Content = styled.ScrollView`
+export const Content = styled(FlatList as new () => FlatList<GameResponse>)`
 	flex: 1;
 	background-color: #fff;
 `

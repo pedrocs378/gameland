@@ -1,6 +1,6 @@
-import { useNavigation } from '@react-navigation/native'
 import React, { useCallback, useEffect, useState } from 'react'
-import { ActivityIndicator, View } from 'react-native'
+import { ActivityIndicator, View, ListRenderItem, FlatListProps } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import { RectButton } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 import Toast from 'react-native-simple-toast'
@@ -32,7 +32,7 @@ interface GameProps {
 	cover: CoverProps
 }
 
-interface GameResponse {
+export interface GameResponse {
 	game: GameProps
 	isAdded: boolean
 }
@@ -118,6 +118,14 @@ const Search: React.FC = () => {
 					}
 				})
 			}
+		} else {
+			if (searchText.length === 0) {
+				api.get('/igdb/games/popular').then((response) => {
+					if (isSubscribed) {
+						setGames(response.data)
+					}
+				})
+			}
 		}
 	}, [refresh, searchText])
 
@@ -152,8 +160,34 @@ const Search: React.FC = () => {
 					<Icon name="x" size={25} color="#000" />
 				</ClearButton>
 			</Header>
-			<Content>
-				{games.map(({ game, isAdded }) => {
+			<Content
+				data={games}
+				keyExtractor={({ game }) => `${game.id}`}
+				
+				renderItem={({ item }) => {
+					return (
+						<Game key={item.game.id} onPress={() => handleGoToGameInfo(item.game.id)}>
+							<GameContainer>
+								<GameImage
+									resizeMode="cover"
+									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${item.game.cover.image_id}.jpg` }}
+								/>
+								<GameTitle>
+									{item.game.name}
+								</GameTitle>
+							</GameContainer>
+							<RectButton onPress={() => handleSaveOrRemoveGame(item.game.id, item.isAdded) }>
+								<Icon 
+									name={ item.isAdded ? "check-square" : "plus-square"} 
+									size={28} 
+									color="#3c90ef" 
+								/>
+							</RectButton>
+						</Game>
+					)
+				}}
+			/>
+				{/* {games.map(({ game, isAdded }) => {
 					if (game) {
 						return (
 							<Game key={game.id} onPress={() => handleGoToGameInfo(game.id)}>
@@ -176,8 +210,7 @@ const Search: React.FC = () => {
 							</Game>
 						)
 					}
-				})}
-			</Content>
+				})} */}
 		</Container>
 	)
 

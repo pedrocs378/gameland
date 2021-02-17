@@ -29,7 +29,7 @@ export default class GamesController {
 
 		const apiResponse = await api.post<GameObject[]>(
 			'/games',
-			`fields name, rating, cover.*; where rating != null & cover != null & name != null; search "${q}";`
+			`fields name, rating, cover.*; limit 100; where rating != null & cover != null & name != null; search "${q}";`
 		)
 
 		const gamesRepository = getMongoRepository(Game)

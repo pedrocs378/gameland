@@ -14,6 +14,7 @@ import {
 	GameSection,
 	Title,
 } from './styles'
+import SearchHeader from '../../components/SearchHeader'
 
 interface GameUser {
 	id: number
@@ -37,10 +38,8 @@ const UserGames: React.FC = () => {
 
 	return (
 		<Container>
-			<SearchButton onPress={() => navigation.navigate('Search')}>
-				<Icon name="search" size={18} color="#777" />
-				<SearchButtonText>Search...</SearchButtonText>
-			</SearchButton>
+			<SearchHeader />
+			
 			<GameSection>
 				<Title>My games</Title>
 				<Content>

@@ -2,6 +2,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import React, { useCallback, useState } from 'react'
 import { RectButton } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
+import SearchHeader from '../../components/SearchHeader'
 
 import api from '../../services/api'
 
@@ -37,7 +38,6 @@ interface GameResponse {
 	isAdded: boolean
 }
 
-
 const Home: React.FC = () => {
 	const [popularGames, setPopularGames] = useState<GameResponse[]>([])
 	const [releases, setReleases] = useState<GameResponse[]>([])
@@ -68,10 +68,8 @@ const Home: React.FC = () => {
 
 	return (
 		<Container>
-			<SearchButton onPress={() => navigation.navigate('Search')}>
-				<Icon name="search" size={18} color="#777" />
-				<SearchButtonText>Search...</SearchButtonText>
-			</SearchButton>
+			<SearchHeader />
+
 			<GameSection>
 				<HeaderSection>
 					<Title>Popular games</Title>
