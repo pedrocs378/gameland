@@ -9,18 +9,6 @@ import {
 
 import { GameObject } from './GameObject'
 
-// interface Platform {
-// 	id: number
-// 	name: string
-// 	abbreviation: string
-// }
-
-// interface GameObject {
-// 	id: number
-// 	cover_url: string
-// 	platforms: Platform[]
-// }
-
 @Entity('games')
 class Game {
 	@ObjectIdColumn()

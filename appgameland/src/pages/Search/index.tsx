@@ -1,7 +1,9 @@
-import { useNavigation } from '@react-navigation/native'
-import React, { useCallback, useState } from 'react'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { ActivityIndicator, View } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
+import api from '../../services/api'
 
 import { 
 	Container,
@@ -16,19 +18,62 @@ import {
 	GameTitle,
 } from './styles'
 
+interface CoverProps {
+	id: number
+	url: string
+	image_id: string
+}
+
+interface GameProps {
+	id: number
+	name: string
+	cover: CoverProps
+}
+
 const Search: React.FC = () => {
+	const [games, setGames] = useState<GameProps[]>([])
 	const [inserted, setInserted] = useState(false)
 	const [searchText, setSearchText] = useState("")
+	const [isSubscribed, setIsSubscribed] = useState(true)
 
 	const navigation = useNavigation()
 
-	const handleSearch = useCallback((text: string) => {
+	const handleSearch = useCallback(async (text: string) => {
 		setSearchText(text)
+		const response = await api.get(`/igdb/games/search?q=${text}`)
+
+		setGames(response.data)
 	}, [])
+
+	const handleGoToGameInfo = useCallback((id: number) => {
+		navigation.navigate('GameInfo', { id })
+	}, [navigation.navigate])
 
 	const handleClearSearchText = useCallback(() => {
 		setSearchText("")
 	}, [])
+
+	useEffect(() => {
+		setIsSubscribed(true)
+
+		api.get('/igdb/games/popular').then((response) => {
+			if (isSubscribed) {
+				setGames(response.data)
+			}
+		})
+
+		return () => {
+			setIsSubscribed(false)
+		}
+	}, [])
+
+	if (!games) {
+		return (
+			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+				<ActivityIndicator size={50} color="#3c90ef" />
+			</View>
+		)
+	} 
 
 	return (
 		<Container>
@@ -54,27 +99,32 @@ const Search: React.FC = () => {
 				</ClearButton>
 			</Header>
 			<Content>
-				<Game>
-					<GameContainer>
-						<GameImage
-							resizeMode="cover"
-							source={{ uri: 'https://images.igdb.com/igdb/image/upload/t_thumb/co2s0o.jpg' }}
-						/>
-						<GameTitle>
-							Name of game
-						</GameTitle>
-					</GameContainer>
-					<RectButton onPress={() => setInserted(!inserted)}>
-						<Icon 
-							name={ inserted ? "check-square" : "plus-square"} 
-							size={25} 
-							color="#3c90ef" 
-						/>
-					</RectButton>
-				</Game>
+				{games.map(game => {
+					return (
+						<Game key={game.id} onPress={() => handleGoToGameInfo(game.id)}>
+							<GameContainer>
+								<GameImage
+									resizeMode="cover"
+									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
+								/>
+								<GameTitle>
+									{game.name}
+								</GameTitle>
+							</GameContainer>
+							<RectButton onPress={() => setInserted(!inserted)}>
+								<Icon 
+									name={ inserted ? "check-square" : "plus-square"} 
+									size={25} 
+									color="#3c90ef" 
+								/>
+							</RectButton>
+						</Game>
+					)
+				})}
 			</Content>
 		</Container>
 	)
+
 }
 
 export default Search

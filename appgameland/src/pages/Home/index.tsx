@@ -44,12 +44,12 @@ const Home: React.FC = () => {
 	}, [navigation.navigate])
 
 	useFocusEffect(() => {
-		api.get('/games/popular').then((response) => {
+		api.get('/igdb/games/popular').then((response) => {
 			if (isSubscribed) {
 				setPopularGames(response.data)
 			}
 		})
-		api.get('/games/releases').then((response) => {
+		api.get('/igdb/games/releases').then((response) => {
 			if (isSubscribed) {
 				setReleases(response.data)
 			}

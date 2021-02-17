@@ -77,7 +77,7 @@ const GameInfo: React.FC = () => {
 	const { id } = params as RouteParams
 
 	useEffect(() => {
-		api.get(`/games/${id}`).then(response => {
+		api.get(`/igdb/games/${id}`).then(response => {
 			setGame(response.data)
 		})
 	}, [id])

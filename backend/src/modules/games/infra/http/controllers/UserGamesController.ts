@@ -4,6 +4,7 @@ import { getMongoRepository } from 'typeorm'
 import Game from '../../typeorm/schemas/Game'
 
 import igdbConfig from '@config/igdb'
+import { classToClass } from 'class-transformer'
 
 export default class UserGamesController {
 
@@ -33,33 +34,22 @@ export default class UserGamesController {
 					return response.status(400).json('Game already inserted')
 				}
 
-				const [data] = apiResponse.data
-				
-				const newGame = {
-					id: data.id,
-					cover_url: `http://images.igdb.com/igdb/image/upload/t_cover_big_2x/${data.cover.image_id}.jpg`,
-					platforms: data.platforms
-				}
+				const [ newGame ] = apiResponse.data
 
 				gamesUser.games.push(newGame)
 
 				await gamesRepository.save(gamesUser)
 
-				return response.json(gamesUser)
+				return response.json(classToClass(gamesUser))
 			} else {
-				const [data] = apiResponse.data
-				const newGame = {
-					id: data.id,
-					cover_url: `http://images.igdb.com/igdb/image/upload/t_cover_big_2x/${data.cover.image_id}.jpg`,
-					platforms: data.platforms
-				}
+				const [ newGame ] = apiResponse.data
 
 				gamesUser.games = new Array()
 				gamesUser.games.push(newGame)
 
 				await gamesRepository.save(gamesUser)
 
-				return response.json(gamesUser)
+				return response.json(classToClass(gamesUser))
 			}
 			
 		} else {
@@ -67,19 +57,14 @@ export default class UserGamesController {
 				user_id
 			})
 
-			const [data] = apiResponse.data
-			const newGame = {
-				id: data.id,
-				cover_url: `http://images.igdb.com/igdb/image/upload/t_cover_big_2x/${data.cover.image_id}.jpg`,
-				platforms: data.platforms
-			}
+			const [ newGame ] = apiResponse.data
 
 			newUserGames.games = new Array()
 			newUserGames.games.push(newGame)
 
 			await gamesRepository.save(newUserGames)
 
-			return response.json(newUserGames)
+			return response.json(classToClass(newUserGames))
 		}
 
 	}
@@ -126,7 +111,7 @@ export default class UserGamesController {
 			return response.status(400).send('User not found')
 		}
 
-		return response.json(gamesUser.games)
+		return response.json(classToClass(gamesUser.games))
 	}
 
 	public async index(request: Request, response: Response): Promise<Response> {
@@ -145,6 +130,6 @@ export default class UserGamesController {
 
 		const game = gamesUser.games.find(game => game.id === Number(id))
 
-		return response.json({ found: !!game, game })
+		return response.json({ found: !!game, game: classToClass(game) })
 	}
 }

@@ -42,14 +42,13 @@ export const Content = styled.ScrollView`
 	background-color: #fff;
 `
 
-export const Game = styled.View`
+export const Game = styled(RectButton)`
 	background-color: white;
 	height: 90px;
 	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
 	padding: 15px 20px;
-	/* margin-top: 10px; */
 	border-bottom-width: 1px;
 	border-bottom-color: #e6e6e6;
 `
@@ -69,4 +68,5 @@ export const GameTitle = styled.Text`
 	margin-left: 15px;
 	font-family: 'Poppins-Medium';
 	font-size: 15px;
+	max-width: 80%;
 `

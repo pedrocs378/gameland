@@ -5,6 +5,7 @@ import IoniconIcon from 'react-native-vector-icons/Ionicons'
 
 import Home from '../pages/Home'
 import Profile from '../pages/Profile'
+import UserGames from '../pages/UserGames'
 
 const { Navigator, Screen } = createBottomTabNavigator()
 
@@ -39,7 +40,7 @@ const HomeRoutes: React.FC = () => {
 			/>
 			<Screen 
 				name="UserGames" 
-				component={Home} 
+				component={UserGames} 
 				options={{
 					title: 'My Games',
 					tabBarIcon: ({ color }) => 

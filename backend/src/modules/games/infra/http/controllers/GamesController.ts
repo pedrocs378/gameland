@@ -16,4 +16,17 @@ export default class GamesController {
 
 		return response.json(apiResponse.data[0])
 	} 
+
+	public async show(request: Request, response: Response): Promise<Response> {
+		const { q } = request.query
+
+		const { api } = igdbConfig
+
+		const apiResponse = await api.post(
+			'/games',
+			`fields name, rating, cover.*; where rating != null & cover != null & name != null; search "${q}";`
+		)
+
+		return response.json(apiResponse.data)
+	} 
 }
