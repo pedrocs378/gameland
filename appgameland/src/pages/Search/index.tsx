@@ -1,8 +1,10 @@
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
+import Toast from 'react-native-simple-toast'
+
 import api from '../../services/api'
 
 import { 
@@ -40,6 +42,7 @@ const Search: React.FC = () => {
 	const [searchText, setSearchText] = useState("")
 	const [isSubscribed, setIsSubscribed] = useState(true)
 	const [loading, setLoading] = useState(false)
+	const [refresh, setRefresh] = useState(false)
 
 	const navigation = useNavigation()
 
@@ -48,6 +51,28 @@ const Search: React.FC = () => {
 		const response = await api.get(`/igdb/games/search?q=${text}`)
 
 		setGames(response.data)
+	}, [])
+
+	const handleSaveOrRemoveGame = useCallback(async (id: number, isAdded: boolean) => {
+		if (isAdded) {
+			try {
+				await api.delete(`/games/${id}/me`)
+				setRefresh(true)
+
+				Toast.show('Removed', Toast.LONG)
+			} catch {
+				Toast.show('Error', Toast.LONG)
+			}
+		} else {
+			try {
+				await api.post(`/games/${id}/me`)
+				setRefresh(true)
+
+				Toast.show('Added', Toast.LONG)
+			} catch {
+				Toast.show('Error', Toast.LONG)
+			}
+		}
 	}, [])
 
 	const handleGoToGameInfo = useCallback((id: number) => {
@@ -60,6 +85,7 @@ const Search: React.FC = () => {
 
 	useEffect(() => {
 		setIsSubscribed(true)
+
 		if (isSubscribed) {
 			setLoading(true)
 		}
@@ -76,6 +102,24 @@ const Search: React.FC = () => {
 			setIsSubscribed(false)
 		}
 	}, [isSubscribed])
+
+	useEffect(() => {
+		if (refresh) {
+			if (searchText.length > 0) {
+				api.get(`/igdb/games/search?q=${searchText}`).then(response => {
+					setGames(response.data)
+					setRefresh(false)
+				})
+			} else {
+				api.get('/igdb/games/popular').then((response) => {
+					if (isSubscribed) {
+						setGames(response.data)
+						setRefresh(false)
+					}
+				})
+			}
+		}
+	}, [refresh, searchText])
 
 	if (loading || !games) {
 		return (
@@ -122,10 +166,10 @@ const Search: React.FC = () => {
 										{game.name}
 									</GameTitle>
 								</GameContainer>
-								<RectButton onPress={() => {}}>
+								<RectButton onPress={() => handleSaveOrRemoveGame(game.id, isAdded) }>
 									<Icon 
 										name={ isAdded ? "check-square" : "plus-square"} 
-										size={25} 
+										size={28} 
 										color="#3c90ef" 
 									/>
 								</RectButton>
