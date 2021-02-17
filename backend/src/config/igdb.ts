@@ -8,7 +8,7 @@ export default {
 		baseURL: 'https://api.igdb.com/v4',
 		headers: {
 			'Client-ID': process.env.CLIENT_ID,
-			'Authorization': 'Bearer lt9qryyf79wlvb4cic3thup7xcb00c'
+			'Authorization': `Bearer ${process.env.IGDB_TOKEN}`
 		}
 	}),
 }

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express'
 import { getMongoRepository } from 'typeorm'
+import { classToClass } from 'class-transformer'
 
 import Game from '../../typeorm/schemas/Game'
 
 import igdbConfig from '@config/igdb'
-import { classToClass } from 'class-transformer'
 
 export default class UserGamesController {
 
@@ -28,12 +28,6 @@ export default class UserGamesController {
 		if (gamesUser) {
 			
 			if (gamesUser.games) {
-				const isExists = gamesUser.games.find(game => game.id === Number(id))
-
-				if (isExists) {
-					return response.status(400).json('Game already inserted')
-				}
-
 				const [ newGame ] = apiResponse.data
 
 				gamesUser.games.push(newGame)
@@ -53,14 +47,15 @@ export default class UserGamesController {
 			}
 			
 		} else {
-			const newUserGames = gamesRepository.create({
-				user_id
-			})
-
 			const [ newGame ] = apiResponse.data
 
-			newUserGames.games = new Array()
-			newUserGames.games.push(newGame)
+			const games = new Array()
+			games.push(newGame)
+
+			const newUserGames = gamesRepository.create({
+				user_id,
+				games
+			})
 
 			await gamesRepository.save(newUserGames)
 
@@ -79,7 +74,7 @@ export default class UserGamesController {
 			where: { user_id }
 		})
 
-		if (!gamesUser) {
+		if (!gamesUser || !gamesUser.games) {
 			return response.status(400).send('User not found')
 		}
 
@@ -107,8 +102,8 @@ export default class UserGamesController {
 			where: { user_id }
 		})
 
-		if (!gamesUser) {
-			return response.status(400).send('User not found')
+		if (!gamesUser || !gamesUser.games) {
+			return response.json([])
 		}
 
 		return response.json(classToClass(gamesUser.games))
@@ -124,8 +119,8 @@ export default class UserGamesController {
 			where: { user_id }
 		})
 
-		if (!gamesUser) {
-			return response.status(400).send('User not found')
+		if (!gamesUser || !gamesUser.games) {
+			return response.json({ found: false })
 		}
 
 		const game = gamesUser.games.find(game => game.id === Number(id))

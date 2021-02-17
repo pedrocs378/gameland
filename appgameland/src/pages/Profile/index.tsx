@@ -57,7 +57,7 @@ const Profile: React.FC = () => {
 					<ChangeAvatarButton onPress={handleChangeUserPhoto}>
 						<Icon name="camera" size={27} color="#FFF" />
 					</ChangeAvatarButton>
-				</UserAvatar>
+				</UserAvatar> 
 				<UserName>{user.name}</UserName>
 				{
 					user.description && (

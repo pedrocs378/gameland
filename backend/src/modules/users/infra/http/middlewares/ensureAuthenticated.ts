@@ -16,7 +16,7 @@ export default function ensureAuthenticated(request: Request, response: Response
 		throw new Error('JWT Token is missing')
 	}
 
-	const [_, token] = authHeader.split(" ")
+	const [_, token] = authHeader.split(' ')
 
 	try {
 		const decoded = verify(token, authConfig.jwt.secret)
@@ -28,7 +28,8 @@ export default function ensureAuthenticated(request: Request, response: Response
 		}
 
 		return next()
-	} catch {
+	} catch (err) {
+		response.json(err)
 		throw new Error('Invalid JWT Token')
 	}
 }

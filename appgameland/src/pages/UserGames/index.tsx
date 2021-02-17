@@ -1,20 +1,22 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
+
+import SearchHeader from '../../components/SearchHeader'
 
 import api from '../../services/api'
 
 import { 
 	Container,
-	SearchButton,
-	SearchButtonText,
 	Content,
+	MessageBox,
+	MessageText,
 	Game,
 	GameImage,
 	GameSection,
 	Title,
 } from './styles'
-import SearchHeader from '../../components/SearchHeader'
+import { ActivityIndicator, View } from 'react-native'
 
 interface GameUser {
 	id: number
@@ -23,6 +25,8 @@ interface GameUser {
 
 const UserGames: React.FC = () => {
 	const [userGames, setUserGames] = useState<GameUser[]>([])
+	const [isSubscribed, setIsSubscribed] = useState(true)
+	const [loading, setLoading] = useState(true)
 	
 	const navigation = useNavigation()
 
@@ -30,11 +34,33 @@ const UserGames: React.FC = () => {
 		navigation.navigate('GameInfo', { id })
 	}, [navigation.navigate])
 
-	useFocusEffect(() => {
+	useEffect(() => {
+		setIsSubscribed(true)
+
 		api.get('/games/me').then((response) => {
-			setUserGames(response.data)
+			if (isSubscribed) {
+				setUserGames(response.data)
+				setLoading(false)
+			}
+		}).finally(() => {
+			if (isSubscribed) {
+				setLoading(false)
+			}
 		})
-	})
+
+		return () => {
+			setIsSubscribed(false)
+			setLoading(false)
+		}
+	}, [isSubscribed])
+
+	if (loading || !userGames) {
+		return (
+			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+				<ActivityIndicator size={50} color="#3c90ef" />
+			</View>
+		)
+	}
 
 	return (
 		<Container>
@@ -43,6 +69,13 @@ const UserGames: React.FC = () => {
 			<GameSection>
 				<Title>My games</Title>
 				<Content>
+					{userGames.length === 0 && (
+						<MessageBox>
+							<Icon name="frown" size={40} color="#adadad" />
+							<MessageText>You don't have none game added</MessageText>
+						</MessageBox>
+					)}
+
 					{userGames.map((game) => {
 						return (
 							<Game 

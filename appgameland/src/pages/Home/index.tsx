@@ -1,5 +1,6 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { ActivityIndicator, View } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 import SearchHeader from '../../components/SearchHeader'
@@ -42,6 +43,7 @@ const Home: React.FC = () => {
 	const [popularGames, setPopularGames] = useState<GameResponse[]>([])
 	const [releases, setReleases] = useState<GameResponse[]>([])
 	const [isSubscribed, setIsSubscribed] = useState(true)
+	const [loading, setLoading] = useState(false)
 
 	const navigation = useNavigation()
 
@@ -50,11 +52,14 @@ const Home: React.FC = () => {
 	}, [navigation.navigate])
 
 	useFocusEffect(() => {
+		setIsSubscribed(true)
+
 		api.get('/igdb/games/popular').then((response) => {
 			if (isSubscribed) {
 				setPopularGames(response.data)
 			}
 		})
+
 		api.get('/igdb/games/releases').then((response) => {
 			if (isSubscribed) {
 				setReleases(response.data)
@@ -65,6 +70,14 @@ const Home: React.FC = () => {
 			return setIsSubscribed(false)
 		}
 	})
+
+	if (loading || !popularGames || !releases) {
+		return (
+			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
+				<ActivityIndicator size={50} color="#3c90ef" />
+			</View>
+		)
+	} 
 
 	return (
 		<Container>

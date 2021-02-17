@@ -34,7 +34,7 @@ export default class ProfileController {
 		user.name = name
 		user.last_name = last_name
 		user.email = email
-		user.description = description
+		user.description = description.trim() ? description : null
 
 		await usersRepository.save(user)
 

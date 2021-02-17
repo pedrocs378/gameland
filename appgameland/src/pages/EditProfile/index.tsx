@@ -25,7 +25,6 @@ const EditProfile: React.FC = () => {
 	const [description, setDescription] = useState(user.description || "")
 	const [buttonEnabled, setButtonEnabled] = useState(true)
 
-
 	const handleSave = useCallback(async () => {
 		try {
 			const data = {

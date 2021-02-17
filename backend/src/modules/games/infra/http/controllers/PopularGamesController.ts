@@ -13,34 +13,44 @@ export default class PopularGamesController {
 
 		const { api } = igdbConfig
 
-		try {
-			const apiResponse = await api.post<GameObject[]>(
-				'/games',
-				'fields name, first_release_date, rating, cover.*; limit 20; sort rating desc; where rating != null & cover != null & rating >= 70 & rating_count >= 120 & first_release_date >= 1517858929;'
-			)
+		const apiResponse = await api.post<GameObject[]>(
+			'/games',
+			'fields name, first_release_date, rating, cover.*; limit 20; sort rating desc; where rating != null & cover != null & rating >= 70 & rating_count >= 120 & first_release_date >= 1517858929;'
+		)
 
-			const gamesRepository = getMongoRepository(Game)
+		const gamesRepository = getMongoRepository(Game)
 
-			const userGames = await gamesRepository.findOne({
-				where: { user_id }
+		const userGames = await gamesRepository.findOne({
+			where: { user_id }
+		})
+
+		if (!userGames) {
+			const games = apiResponse.data.map(game => {	
+				return {
+					game,
+					isAdded: false
+				}
 			})
 
-			if (!userGames) {
-				return response.json(apiResponse.data)
-			}
+			return response.json(games)
+		}
 
-			const games = apiResponse.data.map(game => {
+		const games = apiResponse.data.map(game => {
+			if (userGames.games) {
 				const isAdded = userGames.games.find(data => data.id === game.id)
 
 				return {
 					game,
 					isAdded: !!isAdded
 				}
-			})
-		
-			return response.json(games)
-		} catch (err) {
-			return response.json(err)
-		}
+			} else {
+				return {
+					game,
+					isAdded: false
+				}
+			}
+		})
+	
+		return response.json(games)
 	} 
 }

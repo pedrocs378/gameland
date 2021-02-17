@@ -1,32 +1,12 @@
 import styled from 'styled-components/native'
-import { RectButton } from 'react-native-gesture-handler'
 
 export const Container = styled.ScrollView`
 	flex: 1;
-	/* background-color: #000; */
-`
-
-export const SearchButton = styled(RectButton)`
-	flex-direction: row;
-	align-items: center;
-	margin: 60px 20px 0;
-	background-color: #e1e1e1;
-	padding: 10px;
-	border-radius: 5px;
-`
-
-export const SearchButtonText = styled.Text`
-	margin-left: 8px;
-	font-family: 'Poppins-Regular';
-	color: #777;
 `
 
 export const GameSection = styled.View`
+	flex: 1;
 	margin-top: 15px;
-`
-
-export const RefreshContainer = styled.RefreshControl`
-	/* position: relative; */
 `
 
 export const HeaderSection = styled.View`
@@ -34,7 +14,6 @@ export const HeaderSection = styled.View`
 	align-items: center;
 	margin: 0 20px 10px;
 	margin-left: 20px;
-	/* background-color: #000; */
 	height: 30px;
 	width: 300px;
 `
@@ -46,9 +25,23 @@ export const Title = styled.Text`
 `
 
 export const Content = styled.View`
-	padding-left: 15px;
+	padding: 0 15px;
 	flex-direction: row;
 	flex-wrap: wrap;
+`
+
+export const MessageBox = styled.View`
+	width: 100%;
+	height: 500px;
+
+	align-items: center;
+	justify-content: center;
+`
+
+export const MessageText = styled.Text`
+	font-family: 'Poppins-Medium';
+	font-size: 17px;
+	color: #adadad;
 `
 
 export const Game = styled.TouchableOpacity`

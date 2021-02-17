@@ -68,19 +68,20 @@ const AuthProvider: React.FC = ({ children }) => {
 			['@GameLand:user', JSON.stringify(user)],
 		])
 
-		api.defaults.headers.authorization = `Bearer ${token[1]}`
+		api.defaults.headers.authorization = `Bearer ${token}`
 
 		setData({ token, user })
 	}, [])
 
 	const signOut = useCallback(async () => {
 		await AsyncStorage.multiRemove(['@GameLand:token', '@GameLand:user'])
+		api.defaults.headers.authorization = 
 
 		setData({} as AuthState)
 	}, [])
 
 	const updateUser = useCallback(async (user: User) => {
-		await AsyncStorage.setItem('@GoBarber:user', JSON.stringify(user))
+		await AsyncStorage.setItem('@GameLand:user', JSON.stringify(user))
 
 		setData({
 			token: data.token,

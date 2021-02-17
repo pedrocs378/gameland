@@ -25,15 +25,29 @@ export default class ReleaseGamesController {
 		})
 
 		if (!userGames) {
-			return response.json(apiResponse.data)
+			const games = apiResponse.data.map(game => {	
+				return {
+					game,
+					isAdded: false
+				}
+			})
+
+			return response.json(games)
 		}
 
 		const games = apiResponse.data.map(game => {
-			const isAdded = userGames.games.find(data => data.id === game.id)
+			if (userGames.games) {
+				const isAdded = userGames.games.find(data => data.id === game.id)
 
-			return {
-				game,
-				isAdded: !!isAdded
+				return {
+					game,
+					isAdded: !!isAdded
+				}
+			} else {
+				return {
+					game,
+					isAdded: false
+				}
 			}
 		})
 	
