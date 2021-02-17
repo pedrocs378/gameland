@@ -13,7 +13,6 @@ export const CardUser = styled.View`
 	background-color: #3c90ef;
 	justify-content: center;
 	align-items: center;
-
 `
 
 export const CardUserBackground = styled.Image`

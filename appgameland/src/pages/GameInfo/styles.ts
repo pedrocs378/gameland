@@ -32,7 +32,7 @@ export const AddGameButton = styled(RectButton)<AddGameButtonProps>`
 	position: absolute;
 	bottom: -30px;
 	right: 30px;
-	background-color: ${({ isGameAdded }) => isGameAdded ? '#ff2000' : '#3c90ef'};
+	background-color: ${({ isGameAdded }) => isGameAdded ? '#ff2000' : '#04D361'};
 	height: 60px;
 	width: 170px;
 	align-items: center;

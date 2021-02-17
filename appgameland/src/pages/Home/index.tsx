@@ -32,9 +32,15 @@ interface GameProps {
 	cover: CoverProps
 }
 
+interface GameResponse {
+	game: GameProps
+	isAdded: boolean
+}
+
+
 const Home: React.FC = () => {
-	const [popularGames, setPopularGames] = useState<GameProps[]>([])
-	const [releases, setReleases] = useState<GameProps[]>([])
+	const [popularGames, setPopularGames] = useState<GameResponse[]>([])
+	const [releases, setReleases] = useState<GameResponse[]>([])
 	const [isSubscribed, setIsSubscribed] = useState(true)
 
 	const navigation = useNavigation()
@@ -77,19 +83,21 @@ const Home: React.FC = () => {
 					horizontal 
 					showsHorizontalScrollIndicator={false}
 				>
-					{popularGames.map((game) => {
-						return (
-							<Game 
-								key={game.id} 
-								activeOpacity={0.6}
-								onPress={() => handleGoToGameInfo(game.id)}
-							>
-								<GameImage
-									resizeMode="cover"
-									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
-								/>
-							</Game>
-						)
+					{popularGames.map(({ game }) => {
+						if (game) {
+							return (
+								<Game 
+									key={game.id} 
+									activeOpacity={0.6}
+									onPress={() => handleGoToGameInfo(game.id)}
+								>
+									<GameImage
+										resizeMode="cover"
+										source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
+									/>
+								</Game>
+							)
+						}
 					})}
 				</Content>
 			</GameSection>
@@ -104,19 +112,21 @@ const Home: React.FC = () => {
 					horizontal 
 					showsHorizontalScrollIndicator={false}
 				>
-					{releases.map((game) => {
-						return (
-							<Game 
-								key={game.id} 
-								activeOpacity={0.6} 
-								onPress={() => handleGoToGameInfo(game.id)}
-							>
-								<GameImage
-									resizeMode="cover"
-									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
-								/>
-							</Game>
-						)
+					{releases.map(({ game }) => {
+						if (game) {
+							return (
+								<Game 
+									key={game.id} 
+									activeOpacity={0.6} 
+									onPress={() => handleGoToGameInfo(game.id)}
+								>
+									<GameImage
+										resizeMode="cover"
+										source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
+									/>
+								</Game>
+							)
+						}
 					})}
 				</Content>
 			</GameSection>

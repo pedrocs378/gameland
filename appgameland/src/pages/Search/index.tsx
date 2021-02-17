@@ -30,11 +30,16 @@ interface GameProps {
 	cover: CoverProps
 }
 
+interface GameResponse {
+	game: GameProps
+	isAdded: boolean
+}
+
 const Search: React.FC = () => {
-	const [games, setGames] = useState<GameProps[]>([])
-	const [inserted, setInserted] = useState(false)
+	const [games, setGames] = useState<GameResponse[]>([])
 	const [searchText, setSearchText] = useState("")
 	const [isSubscribed, setIsSubscribed] = useState(true)
+	const [loading, setLoading] = useState(false)
 
 	const navigation = useNavigation()
 
@@ -55,19 +60,24 @@ const Search: React.FC = () => {
 
 	useEffect(() => {
 		setIsSubscribed(true)
+		if (isSubscribed) {
+			setLoading(true)
+		}
 
 		api.get('/igdb/games/popular').then((response) => {
 			if (isSubscribed) {
 				setGames(response.data)
+				setLoading(false)
 			}
 		})
 
 		return () => {
+			setLoading(false)
 			setIsSubscribed(false)
 		}
-	}, [])
+	}, [isSubscribed])
 
-	if (!games) {
+	if (loading || !games) {
 		return (
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
 				<ActivityIndicator size={50} color="#3c90ef" />
@@ -99,27 +109,29 @@ const Search: React.FC = () => {
 				</ClearButton>
 			</Header>
 			<Content>
-				{games.map(game => {
-					return (
-						<Game key={game.id} onPress={() => handleGoToGameInfo(game.id)}>
-							<GameContainer>
-								<GameImage
-									resizeMode="cover"
-									source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
-								/>
-								<GameTitle>
-									{game.name}
-								</GameTitle>
-							</GameContainer>
-							<RectButton onPress={() => setInserted(!inserted)}>
-								<Icon 
-									name={ inserted ? "check-square" : "plus-square"} 
-									size={25} 
-									color="#3c90ef" 
-								/>
-							</RectButton>
-						</Game>
-					)
+				{games.map(({ game, isAdded }) => {
+					if (game) {
+						return (
+							<Game key={game.id} onPress={() => handleGoToGameInfo(game.id)}>
+								<GameContainer>
+									<GameImage
+										resizeMode="cover"
+										source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
+									/>
+									<GameTitle>
+										{game.name}
+									</GameTitle>
+								</GameContainer>
+								<RectButton onPress={() => {}}>
+									<Icon 
+										name={ isAdded ? "check-square" : "plus-square"} 
+										size={25} 
+										color="#3c90ef" 
+									/>
+								</RectButton>
+							</Game>
+						)
+					}
 				})}
 			</Content>
 		</Container>
