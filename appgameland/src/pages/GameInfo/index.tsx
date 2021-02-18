@@ -25,7 +25,10 @@ import {
 	ReleaseContainer,
 	ReleaseSection,
 	ReleaseSectionTitle,
-	ReleaseSectionContent
+	ReleaseSectionContent,
+	RecommendedGames,
+	Recommended,
+	RecommendedImage,
 } from './styles'
 import api from '../../services/api'
 
@@ -62,6 +65,7 @@ interface GameProps {
 	summary: string
 	first_release_date: number
 	involved_companies: InvolvedCompanies[]
+	similar_games: GameProps[]
 }
 
 interface RouteParams {
@@ -71,7 +75,7 @@ interface RouteParams {
 const GameInfo: React.FC = () => {
 	const [game, setGame] = useState<GameProps>({} as GameProps)
 	const [isGameAdded, setIsGameAdded] = useState(false)
-	const [isSubscribed, setIsSubscribed] = useState(true)
+	const [loading, setLoading] = useState(false)
 
 	const navigation = useNavigation()
 	const { params } = useRoute()
@@ -79,36 +83,26 @@ const GameInfo: React.FC = () => {
 
 	useEffect(() => {
 		api.get(`/igdb/games/${id}`).then(response => {
-			if (isSubscribed) {
-				setGame(response.data)
-			}
+			setGame(response.data)
 		})
-	}, [id, isSubscribed])
+	}, [id])
 
 	useEffect(() => {
-		api.get(`/games/${id}/me`).then(response => {
+		api.get(`/games/${game.id}/me`).then(response => {
 			if (response.data.found) {
-				if (isSubscribed) {
-					setIsGameAdded(true)
-				}
+				setIsGameAdded(true)
 			} else {
-				if (isSubscribed) {
-					setIsGameAdded(false)
-				}
+				setIsGameAdded(false)
 			}
 		})
-
-		return () => {
-			setIsSubscribed(false)
-		}
-	}, [id, isSubscribed])
+	}, [game.id])
 
 	const handleSaveOrRemoveGame = useCallback(async () => {
-		const response = await api.get(`/games/${id}/me`)
+		const response = await api.get(`/games/${game.id}/me`)
 
 		if (response.data.found) {
 			setIsGameAdded(false)
-			const apiResponse = await api.delete(`/games/${id}/me`)
+			const apiResponse = await api.delete(`/games/${game.id}/me`)
 
 			if (apiResponse.status === 200) {
 				Toast.show('Removed', Toast.LONG)
@@ -119,8 +113,8 @@ const GameInfo: React.FC = () => {
 			
 		} else {
 			setIsGameAdded(true)
-			const apiResponse = await api.post(`/games/${id}/me`)
-
+			const apiResponse = await api.post(`/games/${game.id}/me`)
+			console.log(apiResponse.status)
 			if (apiResponse.status === 200) {
 				Toast.show('Added', Toast.LONG)
 			} else {
@@ -128,7 +122,15 @@ const GameInfo: React.FC = () => {
 				Toast.show('Error', Toast.LONG)
 			}
 		}
-	}, [id])
+	}, [game.id])
+
+	const handleChangeGame = useCallback(async (gameId: number) => {
+		setLoading(true)
+		const response = await api.get(`/igdb/games/${gameId}`)
+
+		setGame(response.data)
+		setLoading(false)
+	}, [])
 
 	const ratingValue = useMemo(() => {
 		if (!game.rating) {
@@ -186,7 +188,7 @@ const GameInfo: React.FC = () => {
 		}
 	}, [game.involved_companies])
 
-	if (!game || !game.cover) {
+	if (loading || !game || !game.cover) {
 		return (
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
 				<ActivityIndicator size={50} color="#3c90ef" />
@@ -258,6 +260,27 @@ const GameInfo: React.FC = () => {
 						</ReleaseSection>
 					</ReleaseContainer>
 				</Section>
+				{
+					game.similar_games && (
+						<Section>
+							<SectionTitle>Recommended games</SectionTitle>
+							<RecommendedGames>
+								{game.similar_games.map(game => {
+									return (
+										<Recommended key={game.id} onPress={() => handleChangeGame(game.id)}>
+											<RecommendedImage							
+												resizeMode="cover"
+												source={{
+													uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg`
+												}}
+											/>
+										</Recommended>
+									)
+								})}
+							</RecommendedGames>
+						</Section>
+					)
+				}
 			</Content>
 		</Container>
 	)

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components/native'
+import styled from 'styled-components/native'
 import { setLightness } from 'polished'
 import { RectButton } from 'react-native-gesture-handler'
 
@@ -112,4 +112,22 @@ export const ReleaseSectionContent = styled.Text`
 	font-family: 'Poppins-SemiBold';
 	margin-top: -6px;
 	color: #90969c;
+`
+export const RecommendedGames = styled.View`
+	flex-direction: row;
+	flex-wrap: wrap;
+	margin-top: 5px;
+`
+
+export const Recommended = styled.TouchableOpacity`
+	height: 160px;
+	width: 107px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	border-radius: 5px;
+	overflow: hidden;
+`
+
+export const RecommendedImage = styled.Image`
+	height: 100%;
 `

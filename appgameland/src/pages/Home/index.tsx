@@ -87,7 +87,7 @@ const Home: React.FC = () => {
 
 			<GameSection>
 				<HeaderSection>
-					<Title>Popular games</Title>
+					<Title>Popular Games</Title>
 					<RectButton onPress={() => navigation.navigate('SeeAllGames', { title: 'Popular games', route: 'popular' })}>
 						<ShowMoreButtonText>See all</ShowMoreButtonText>
 					</RectButton>
@@ -116,7 +116,7 @@ const Home: React.FC = () => {
 			</GameSection>
 			<GameSection>
 				<HeaderSection>
-					<Title>New releases</Title>
+					<Title>New Releases</Title>
 					<RectButton onPress={() => navigation.navigate('SeeAllGames', { title: 'New releases', route: 'releases' })}>
 						<ShowMoreButtonText>See all</ShowMoreButtonText>
 					</RectButton>
@@ -145,7 +145,7 @@ const Home: React.FC = () => {
 			</GameSection>
 			<GameSection>
 				<HeaderSection>
-					<Title>Next releases</Title>
+					<Title>Coming Soon</Title>
 					<RectButton onPress={() => navigation.navigate('SeeAllGames', { title: 'Next releases', route: 'next-releases' })}>
 						<ShowMoreButtonText>See all</ShowMoreButtonText>
 					</RectButton>

@@ -15,11 +15,8 @@ export default class GamesController {
 
 		const apiResponse = await api.post(
 			'/games',
-			`fields *, cover.*, themes.*, genres.*, involved_companies.*, involved_companies.company.*; where id = ${id};`
+			`fields *, cover.*, similar_games.*, similar_games.cover.*, themes.*, genres.*, involved_companies.*, involved_companies.company.*; where id = ${id};`
 		)
-
-		console.log(apiResponse.data[0].involved_companies)
-		console.log('STATUS:', apiResponse.status)
 
 		return response.json(apiResponse.data[0])
 	} 
