@@ -9,6 +9,8 @@ import * as Yup from 'yup'
 import Input from '../../components/Input'
 import Button from '../../components/Button'
 
+import { useAuth } from '../../hooks/auth'
+
 import background from '../../assets/introBackground.png'
 
 import { 
@@ -27,11 +29,10 @@ import {
 	ForgotPasswordText,
 	ButtonText,
 } from './styles'
-import api from '../../services/api'
-import { useAuth } from '../../hooks/auth'
+
 
 const SignIn: React.FC = () => {
-	const [checked, setChecked] = useState(false)
+	const [rememberUser, setRememberUser] = useState(false)
 	const [active, setActive] = useState(false)
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
@@ -58,7 +59,8 @@ const SignIn: React.FC = () => {
 
 			await signIn({
 				email,
-				password
+				password,
+				rememberUser
 			})
 		} catch (err) {
 			if (err instanceof Yup.ValidationError) {
@@ -78,7 +80,7 @@ const SignIn: React.FC = () => {
 
 			Toast.show('An error has ocurred. Check your credentials.', Toast.LONG)
 		}
-	}, [navigation.reset, email, password])
+	}, [email, password, rememberUser])
 
 	useEffect(() => {
 		if (email.trim() && password.trim()) {
@@ -136,10 +138,10 @@ const SignIn: React.FC = () => {
 						<FormRow style={{ marginVertical: 25 }}>
 							<RememberInput 
 								activeOpacity={1} 
-								onPress={() => setChecked(!checked)}
+								onPress={() => setRememberUser(!rememberUser)}
 							>
 								<Checkbox
-									status={ checked ? "checked" : "unchecked" }
+									status={ rememberUser ? "checked" : "unchecked" }
 									color="#04D361"
 								/>
 								<RememberInputText>Remember me</RememberInputText>

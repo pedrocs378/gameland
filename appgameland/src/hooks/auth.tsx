@@ -11,6 +11,10 @@ interface User {
 	description?: string
 }
 
+interface OptionsProps {
+	rememberUser: boolean
+}
+
 interface AuthState {
 	token: string
 	user: User
@@ -19,6 +23,7 @@ interface AuthState {
 interface SignInCredentials {
 	email: string
 	password: string
+	rememberUser: boolean
 }
 
 interface AuthContextData {
@@ -38,13 +43,21 @@ const AuthProvider: React.FC = ({ children }) => {
 	useEffect(() => {
 
 		async function loadStoragedData(): Promise<void> {
+
+			const options = await AsyncStorage.getItem('@GameLand:options')
 			
-			const [token, user] = await AsyncStorage.multiGet(['@GameLand:token', '@GameLand:user'])
+			if (options) {
+				const { rememberUser } = JSON.parse(options) as OptionsProps
 
-			if (token[1] && user[1]) {
-				api.defaults.headers.authorization = `Bearer ${token[1]}`
-
-				setData({ token: token[1], user: JSON.parse(user[1]) })
+				if (rememberUser) {
+					const [token, user] = await AsyncStorage.multiGet(['@GameLand:token', '@GameLand:user'])
+		
+					if (token[1] && user[1]) {
+						api.defaults.headers.authorization = `Bearer ${token[1]}`
+		
+						setData({ token: token[1], user: JSON.parse(user[1]) })
+					}
+				}
 			}
 
 			setLoading(false)
@@ -55,18 +68,24 @@ const AuthProvider: React.FC = ({ children }) => {
 
 	}, [])
 
-	const signIn = useCallback(async ({ email, password }) => {
+	const signIn = useCallback(async ({ email, password, rememberUser = false }: SignInCredentials) => {
 		const response = await api.post('sessions', {
 			email,
 			password
 		})
 
 		const { token, user } = response.data
+		
+		await AsyncStorage.setItem('@GameLand:options', JSON.stringify({
+			rememberUser
+		}))
 
-		await AsyncStorage.multiSet([
-			['@GameLand:token', token],
-			['@GameLand:user', JSON.stringify(user)],
-		])
+		if (rememberUser) {
+			await AsyncStorage.multiSet([
+				['@GameLand:token', token],
+				['@GameLand:user', JSON.stringify(user)],
+			])
+		}
 
 		api.defaults.headers.authorization = `Bearer ${token}`
 
@@ -74,8 +93,8 @@ const AuthProvider: React.FC = ({ children }) => {
 	}, [])
 
 	const signOut = useCallback(async () => {
-		await AsyncStorage.multiRemove(['@GameLand:token', '@GameLand:user'])
-		api.defaults.headers.authorization = 
+		await AsyncStorage.multiRemove(['@GameLand:token', '@GameLand:user', '@GameLand:options'])
+		api.defaults.headers.authorization = ''
 
 		setData({} as AuthState)
 	}, [])
