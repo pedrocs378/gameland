@@ -47,15 +47,13 @@ export default class UserGamesController {
 			}
 			
 		} else {
-			const [ newGame ] = apiResponse.data
-
-			const games = new Array()
-			games.push(newGame)
+			const games = apiResponse.data
 
 			const newUserGames = gamesRepository.create({
 				user_id,
-				games
 			})
+
+			newUserGames.games = games
 
 			await gamesRepository.save(newUserGames)
 

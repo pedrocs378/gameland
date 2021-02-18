@@ -12,9 +12,9 @@ const releaseGamesController = new ReleaseGamesController()
 
 const igdbRouter = Router()
 
-igdbRouter.get('/games/search', ensureAuthenticated, gamesController.show)
 igdbRouter.get('/games/popular', ensureAuthenticated, popularGamesController.show)
 igdbRouter.get('/games/releases', ensureAuthenticated, releaseGamesController.show)
+igdbRouter.get('/games/search', ensureAuthenticated, gamesController.show)
 igdbRouter.get('/games/:id', ensureAuthenticated, gamesController.index)
 
 

@@ -18,6 +18,8 @@ export default class GamesController {
 			`fields *, cover.*, themes.*, genres.*, involved_companies.*, involved_companies.company.*; where id = ${id};`
 		)
 
+		console.log('STATUS:', apiResponse.status)
+
 		return response.json(apiResponse.data[0])
 	} 
 

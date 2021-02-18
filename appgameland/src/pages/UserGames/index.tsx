@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import { ActivityIndicator, RefreshControl, View } from 'react-native'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import Icon from 'react-native-vector-icons/Feather'
 
@@ -16,7 +17,6 @@ import {
 	GameSection,
 	Title,
 } from './styles'
-import { ActivityIndicator, View } from 'react-native'
 
 interface GameUser {
 	id: number
@@ -27,6 +27,7 @@ const UserGames: React.FC = () => {
 	const [userGames, setUserGames] = useState<GameUser[]>([])
 	const [isSubscribed, setIsSubscribed] = useState(true)
 	const [loading, setLoading] = useState(true)
+	const [refresh, setRefresh] = useState(false)
 	
 	const navigation = useNavigation()
 
@@ -35,12 +36,9 @@ const UserGames: React.FC = () => {
 	}, [navigation.navigate])
 
 	useEffect(() => {
-		setIsSubscribed(true)
-
 		api.get('/games/me').then((response) => {
 			if (isSubscribed) {
 				setUserGames(response.data)
-				setLoading(false)
 			}
 		}).finally(() => {
 			if (isSubscribed) {
@@ -54,6 +52,23 @@ const UserGames: React.FC = () => {
 		}
 	}, [isSubscribed])
 
+	useEffect(() => {
+		if (refresh) {
+			api.get('/games/me').then((response) => {
+				if (isSubscribed) {
+					setUserGames(response.data)
+					setRefresh(false)
+				}
+			})
+		}
+	}, [refresh, isSubscribed])
+
+	useFocusEffect(() => {
+		api.get('/games/me').then((response) => {
+			setUserGames(response.data)
+		})
+	})
+
 	if (loading || !userGames) {
 		return (
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -63,7 +78,11 @@ const UserGames: React.FC = () => {
 	}
 
 	return (
-		<Container>
+		<Container
+			refreshControl={
+				<RefreshControl refreshing={refresh} onRefresh={() => setRefresh(true)} />
+			}
+		>
 			<SearchHeader />
 			
 			<GameSection>

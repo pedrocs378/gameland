@@ -141,11 +141,16 @@ const GameInfo: React.FC = () => {
 		if (game.involved_companies) {
 			const companys = game.involved_companies.filter(company => company.developer === true)
 
-			if (companys[0].company.name.length >= 20) {
-				return `${companys[0].company.name.substring(0, 20)} ...`
+			if (companys.length > 0) {
+				if (companys[0].company.name.length >= 20) {
+					return `${companys[0].company.name.substring(0, 20)} ...`
+				}
+
+				return companys[0].company.name
+			} else {
+				return 'Not defined'
 			}
 
-			return companys[0].company.name
 		}
 	}, [game.involved_companies])
 
@@ -153,11 +158,16 @@ const GameInfo: React.FC = () => {
 		if (game.involved_companies) {
 			const companys = game.involved_companies.filter(company => company.publisher === true)
 
-			if (companys[0].company.name.length >= 20) {
-				return `${companys[0].company.name.substring(0, 20)} ...`
+			if (companys.length > 0) {
+				if (companys[0].company.name.length >= 20) {
+					return `${companys[0].company.name.substring(0, 20)} ...`
+				}
+
+				return companys[0].company.name
+			} else {
+				return 'Not defined'
 			}
 
-			return companys[0].company.name
 		}
 	}, [game.involved_companies])
 
@@ -204,7 +214,7 @@ const GameInfo: React.FC = () => {
 						<ReviewsCount>{game.rating_count} reviews</ReviewsCount>
 					</RatingContainer>
 					<ThemesContainer>
-						{game.themes.map(theme => {
+						{game.themes && game.themes.map(theme => {
 							return (
 								<Theme key={theme.id}>
 									<ThemeText>{theme.name}</ThemeText>

@@ -43,7 +43,6 @@ const Home: React.FC = () => {
 	const [popularGames, setPopularGames] = useState<GameResponse[]>([])
 	const [releases, setReleases] = useState<GameResponse[]>([])
 	const [isSubscribed, setIsSubscribed] = useState(true)
-	const [loading, setLoading] = useState(false)
 
 	const navigation = useNavigation()
 
@@ -52,7 +51,6 @@ const Home: React.FC = () => {
 	}, [navigation.navigate])
 
 	useFocusEffect(() => {
-		setIsSubscribed(true)
 
 		api.get('/igdb/games/popular').then((response) => {
 			if (isSubscribed) {
@@ -71,7 +69,7 @@ const Home: React.FC = () => {
 		}
 	})
 
-	if (loading || !popularGames || !releases) {
+	if (!popularGames || !releases) {
 		return (
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
 				<ActivityIndicator size={50} color="#3c90ef" />

@@ -1,5 +1,6 @@
 import { Request, Response } from 'express'
 import { getMongoRepository } from 'typeorm'
+import { getUnixTime } from 'date-fns'
 
 import Game from '../../typeorm/schemas/Game'
 import { GameObject } from '../../typeorm/schemas/GameObject'
@@ -13,9 +14,16 @@ export default class ReleaseGamesController {
 
 		const { api } = igdbConfig
 
+		const unixTime = getUnixTime(new Date())
+
 		const apiResponse = await api.post<GameObject[]>(
 			'/games',
-			'fields name, first_release_date, rating, cover.*; limit 20; sort first_release_date desc; where first_release_date != null & cover != null & first_release_date <= 1612559228 & rating >= 80;'
+			`
+				fields name, first_release_date, rating, cover.*; 
+				limit 20; 
+				sort first_release_date desc; 
+				where first_release_date != null & themes != null & cover != null & rating_count >= 20 & first_release_date <= ${unixTime} & rating >= 70;
+			`
 		)
 
 		const gamesRepository = getMongoRepository(Game)
