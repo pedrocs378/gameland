@@ -39,6 +39,7 @@ interface GameResponse {
 const Home: React.FC = () => {
 	const [popularGames, setPopularGames] = useState<GameResponse[]>([])
 	const [releases, setReleases] = useState<GameResponse[]>([])
+	const [nextReleases, setNextReleases] = useState<GameResponse[]>([])
 	const [isSubscribed, setIsSubscribed] = useState(true)
 
 	const navigation = useNavigation()
@@ -61,12 +62,18 @@ const Home: React.FC = () => {
 			}
 		})
 
+		api.get('/igdb/games/next-releases?limit=20').then((response) => {
+			if (isSubscribed) {
+				setNextReleases(response.data)
+			}
+		})
+
 		return () => {
 			return setIsSubscribed(false)
 		}
 	})
 
-	if (!popularGames || !releases) {
+	if (!popularGames || !releases || !nextReleases) {
 		return (
 			<View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }} >
 				<ActivityIndicator size={50} color="#3c90ef" />
@@ -119,6 +126,35 @@ const Home: React.FC = () => {
 					showsHorizontalScrollIndicator={false}
 				>
 					{releases.map(({ game }) => {
+						if (game) {
+							return (
+								<Game 
+									key={game.id} 
+									activeOpacity={0.6} 
+									onPress={() => handleGoToGameInfo(game.id)}
+								>
+									<GameImage
+										resizeMode="cover"
+										source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
+									/>
+								</Game>
+							)
+						}
+					})}
+				</Content>
+			</GameSection>
+			<GameSection>
+				<HeaderSection>
+					<Title>Next releases</Title>
+					<RectButton onPress={() => navigation.navigate('SeeAllGames', { title: 'Next releases', route: 'next-releases' })}>
+						<ShowMoreButtonText>See all</ShowMoreButtonText>
+					</RectButton>
+				</HeaderSection>
+				<Content 
+					horizontal 
+					showsHorizontalScrollIndicator={false}
+				>
+					{nextReleases.map(({ game }) => {
 						if (game) {
 							return (
 								<Game 

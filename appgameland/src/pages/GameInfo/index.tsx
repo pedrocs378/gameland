@@ -71,6 +71,7 @@ interface RouteParams {
 const GameInfo: React.FC = () => {
 	const [game, setGame] = useState<GameProps>({} as GameProps)
 	const [isGameAdded, setIsGameAdded] = useState(false)
+	const [isSubscribed, setIsSubscribed] = useState(true)
 
 	const navigation = useNavigation()
 	const { params } = useRoute()
@@ -78,19 +79,29 @@ const GameInfo: React.FC = () => {
 
 	useEffect(() => {
 		api.get(`/igdb/games/${id}`).then(response => {
-			setGame(response.data)
+			if (isSubscribed) {
+				setGame(response.data)
+			}
 		})
-	}, [id])
+	}, [id, isSubscribed])
 
 	useEffect(() => {
 		api.get(`/games/${id}/me`).then(response => {
 			if (response.data.found) {
-				setIsGameAdded(true)
+				if (isSubscribed) {
+					setIsGameAdded(true)
+				}
 			} else {
-				setIsGameAdded(false)
+				if (isSubscribed) {
+					setIsGameAdded(false)
+				}
 			}
 		})
-	}, [id])
+
+		return () => {
+			setIsSubscribed(false)
+		}
+	}, [id, isSubscribed])
 
 	const handleSaveOrRemoveGame = useCallback(async () => {
 		const response = await api.get(`/games/${id}/me`)
@@ -120,6 +131,10 @@ const GameInfo: React.FC = () => {
 	}, [id])
 
 	const ratingValue = useMemo(() => {
+		if (!game.rating) {
+			return 1
+		}
+
 		const value = (5 * game.rating) / 100
 
 		return value
@@ -211,7 +226,7 @@ const GameInfo: React.FC = () => {
 								backgroundColor: 'transparent',
 							}}
 						/>
-						<ReviewsCount>{game.rating_count} reviews</ReviewsCount>
+						<ReviewsCount>{game.rating_count || 0} reviews</ReviewsCount>
 					</RatingContainer>
 					<ThemesContainer>
 						{game.themes && game.themes.map(theme => {
@@ -223,7 +238,7 @@ const GameInfo: React.FC = () => {
 						})}
 					</ThemesContainer>
 				</Section>
-				<Section style={{ marginTop: 15 }}>
+				<Section>
 					<SectionTitle>About</SectionTitle>
 					<GameDescription>{game.storyline || game.summary}</GameDescription>
 					<ReleaseContainer>

@@ -55,6 +55,7 @@ export const Section = styled.View`
 	background-color: #fff;
 	padding: 28px 20px 15px;
 	border-radius: 8px;
+	margin-bottom: 20px;
 `
 
 export const SectionTitle = styled.Text`
