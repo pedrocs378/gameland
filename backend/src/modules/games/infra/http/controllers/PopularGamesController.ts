@@ -11,19 +11,20 @@ export default class PopularGamesController {
 	
 	public async show(request: Request, response: Response): Promise<Response> {
 		const { id: user_id } = request.user
+		const { limit } = request.query
 
 		const { api } = igdbConfig
 
-		const twoYearsAgoDate = new Date(new Date().getFullYear()-2, new Date().getMonth(), new Date().getDate())
+		const twoYearsAgoDate = new Date(new Date().getFullYear()-3, new Date().getMonth(), new Date().getDate())
 		const unixTime = getUnixTime(twoYearsAgoDate)
 
 		const apiResponse = await api.post<GameObject[]>(
 			'/games',
 			`
-				fields name, first_release_date, rating, cover.*; 
-				limit 20; 
+				fields name, first_release_date, rating, cover.*, themes.*; 
+				limit ${limit || '20'}; 
 				sort rating desc; 
-				where rating != null & themes != null & cover != null & rating >= 70 & rating_count >= 120 & first_release_date >= ${unixTime};
+				where rating != null & themes != null & cover != null & rating >= 70 & total_rating_count >= 100 & first_release_date >= ${unixTime};
 			`
 		)
 

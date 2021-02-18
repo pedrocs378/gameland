@@ -180,37 +180,13 @@ const Search: React.FC = () => {
 								<Icon 
 									name={ item.isAdded ? "check-square" : "plus-square"} 
 									size={28} 
-									color="#3c90ef" 
+									color="#ff9000" 
 								/>
 							</RectButton>
 						</Game>
 					)
 				}}
 			/>
-				{/* {games.map(({ game, isAdded }) => {
-					if (game) {
-						return (
-							<Game key={game.id} onPress={() => handleGoToGameInfo(game.id)}>
-								<GameContainer>
-									<GameImage
-										resizeMode="cover"
-										source={{ uri: `https://images.igdb.com/igdb/image/upload/t_cover_big_2x/${game.cover.image_id}.jpg` }}
-									/>
-									<GameTitle>
-										{game.name}
-									</GameTitle>
-								</GameContainer>
-								<RectButton onPress={() => handleSaveOrRemoveGame(game.id, isAdded) }>
-									<Icon 
-										name={ isAdded ? "check-square" : "plus-square"} 
-										size={28} 
-										color="#3c90ef" 
-									/>
-								</RectButton>
-							</Game>
-						)
-					}
-				})} */}
 		</Container>
 	)
 

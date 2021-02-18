@@ -1,13 +1,13 @@
 import styled from 'styled-components/native'
+import { Platform, StatusBar } from 'react-native'
+import { getStatusBarHeight } from 'react-native-iphone-x-helper'
 import { RectButton } from 'react-native-gesture-handler'
 
 export const Container = styled.View`
-	height: 100px;
-	padding-top: 25px;
-	align-items: center;
-	justify-content: flex-end;
+	justify-content: center;
 	background-color: #fff;
-	margin-bottom: 5px;
+	padding: 10px 0;
+	margin-top: ${Platform.OS === 'android' ? StatusBar.currentHeight : getStatusBarHeight()}px;
 	background-color: transparent;
 `
 

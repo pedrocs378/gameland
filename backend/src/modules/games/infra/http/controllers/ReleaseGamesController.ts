@@ -11,6 +11,7 @@ export default class ReleaseGamesController {
 	
 	public async show(request: Request, response: Response): Promise<Response> {
 		const { id: user_id } = request.user
+		const { limit } = request.query
 
 		const { api } = igdbConfig
 
@@ -19,8 +20,8 @@ export default class ReleaseGamesController {
 		const apiResponse = await api.post<GameObject[]>(
 			'/games',
 			`
-				fields name, first_release_date, rating, cover.*; 
-				limit 20; 
+				fields name, first_release_date, rating, cover.*, themes.*; 
+				limit ${limit || '20'}; 
 				sort first_release_date desc; 
 				where first_release_date != null & themes != null & cover != null & rating_count >= 20 & first_release_date <= ${unixTime} & rating >= 70;
 			`

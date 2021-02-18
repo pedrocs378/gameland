@@ -57,8 +57,9 @@ const UserGames: React.FC = () => {
 			api.get('/games/me').then((response) => {
 				if (isSubscribed) {
 					setUserGames(response.data)
-					setRefresh(false)
 				}
+			}).finally(() => {
+				setRefresh(false)
 			})
 		}
 	}, [refresh, isSubscribed])

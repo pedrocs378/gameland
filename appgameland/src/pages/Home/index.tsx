@@ -1,16 +1,13 @@
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { ActivityIndicator, View } from 'react-native'
 import { RectButton } from 'react-native-gesture-handler'
-import Icon from 'react-native-vector-icons/Feather'
 import SearchHeader from '../../components/SearchHeader'
 
 import api from '../../services/api'
 
 import { 
 	Container,
-	SearchButton,
-	SearchButtonText,
 	GameSection,
 	HeaderSection,
 	Title,
@@ -52,13 +49,13 @@ const Home: React.FC = () => {
 
 	useFocusEffect(() => {
 
-		api.get('/igdb/games/popular').then((response) => {
+		api.get('/igdb/games/popular?limit=20').then((response) => {
 			if (isSubscribed) {
 				setPopularGames(response.data)
 			}
 		})
 
-		api.get('/igdb/games/releases').then((response) => {
+		api.get('/igdb/games/releases?limit=20').then((response) => {
 			if (isSubscribed) {
 				setReleases(response.data)
 			}
@@ -84,7 +81,7 @@ const Home: React.FC = () => {
 			<GameSection>
 				<HeaderSection>
 					<Title>Popular games</Title>
-					<RectButton>
+					<RectButton onPress={() => navigation.navigate('SeeAllGames', { title: 'Popular games', route: 'popular' })}>
 						<ShowMoreButtonText>See all</ShowMoreButtonText>
 					</RectButton>
 				</HeaderSection>
@@ -112,8 +109,8 @@ const Home: React.FC = () => {
 			</GameSection>
 			<GameSection>
 				<HeaderSection>
-					<Title>New Releases</Title>
-					<RectButton>
+					<Title>New releases</Title>
+					<RectButton onPress={() => navigation.navigate('SeeAllGames', { title: 'New releases', route: 'releases' })}>
 						<ShowMoreButtonText>See all</ShowMoreButtonText>
 					</RectButton>
 				</HeaderSection>
