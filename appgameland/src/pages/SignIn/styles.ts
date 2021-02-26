@@ -43,6 +43,7 @@ export const Content = styled.View`
 
 	align-items: center;
 	justify-content: center;
+	z-index: -1;
 `
 
 export const Form = styled.View`

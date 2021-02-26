@@ -38,11 +38,12 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData)
 
 const AuthProvider: React.FC = ({ children }) => {
 	const [data, setData] = useState<AuthState>({} as AuthState)
-	const [loading, setLoading] = useState(true)
+	const [loading, setLoading] = useState(false)
 	
 	useEffect(() => {
 
 		async function loadStoragedData(): Promise<void> {
+			setLoading(true)
 
 			const options = await AsyncStorage.getItem('@GameLand:options')
 			

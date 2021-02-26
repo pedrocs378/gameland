@@ -78,7 +78,9 @@ const SignIn: React.FC = () => {
 				return
 			}
 
-			Toast.show('An error has ocurred. Check your credentials.', Toast.LONG)
+			console.log(err)
+			
+			Toast.show('Network error.', Toast.LONG)
 		}
 	}, [email, password, rememberUser])
 
@@ -92,7 +94,7 @@ const SignIn: React.FC = () => {
 
 	return (
 		<KeyboardAvoidingView 
-			style={{ flex: 1 }}
+			style={{ flex: 2 }}
 			behavior={Platform.OS === 'ios' ? 'padding' : undefined}
 			enabled
 		>
